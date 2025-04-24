@@ -1,0 +1,77 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    background-color: #F0EEE5;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .mobile-frame {
+    width: 360px;
+    height: 100%;
+    background-color: #F0EEE5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .login-container {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .logo {
+    width: 200px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    font-size: 14px;
+  }
+  
+  input[type="password"] {
+    margin-bottom: 30px; /* 비밀번호 입력란 아래 간격을 늘림 */
+  }
+
+  button {
+    width: 80%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .login-btn {
+    background-color: #759e68;
+    color: white;
+  }
+  
+  .signup-link {
+    background-color: white;
+    color: #536E4A;
+    border: 1px solid #536E4A;
+  }
+  
+  .reset-link {
+    font-size: 12px;
+    margin-top: 10px;
+    color: gray;
+    text-decoration: none;
+  }
+  
