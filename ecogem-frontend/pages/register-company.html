@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=360, user-scalable=no" />
+  <title>업체 등록</title>
+  <link rel="stylesheet" href="../css/register-company-style.css" />
+</head>
+<body>
+  <div class="mobile-frame">
+    <div class="scroll-area">
+      <div class="register-container">
+        <div class="header">
+          <img src="../assets/EcoGem_titleLogo.png" class="logo" />
+          <h2>업체 등록</h2>
+        </div>
+
+        <form>
+          <label>업체명 <span class="required">*</span></label>
+          <input type="text" placeholder="업체명" />
+
+          <label>위치(주소) <span class="required">*</span></label>
+          <div class="row">
+            <input type="text" placeholder="주소" />
+            <button type="button" class="search-btn">검색</button>
+          </div>
+
+          <label>담당자 이름 <span class="required">*</span></label>
+          <input type="text" placeholder="담당자 이름" />
+
+          <label>업체 전화번호 <span class="required">*</span></label>
+          <input type="text" placeholder="전화번호" />
+
+          <label class="waste-label">
+            정제 가능 폐기물 종류 <span class="required">*</span>
+            <span class="hint">(중복 선택 가능)</span>
+          </label>
+          <div class="waste-buttons">
+            <button type="button">식용유 폐기물</button>
+            <button type="button">동물성 지방 폐기물</button>
+            <button type="button">식물성 부산물</button>
+            <button type="button">기타 산업용 윤활유</button>
+            <button type="button">혼합 폐기물</button>
+          </div>
+
+          <button type="submit" class="submit-btn">업체 등록하기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
