@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=360, user-scalable=no" />
+  <title>가게 등록</title>
+  <link rel="stylesheet" href="../css/register-store-style.css" />
+</head>
+<body>
+  <div class="mobile-frame">
+    <div class="scroll-area">
+      <div class="register-container">
+        <div class="header">
+          <img src="../assets/EcoGem_titleLogo.png" class="logo" />
+          <h2>가게 등록</h2>
+        </div>
+
+        <form>
+          <label>가게 이름 <span class="required">*</span></label>
+          <input type="text" placeholder="가게 이름" />
+
+          <label>위치(주소) <span class="required">*</span></label>
+          <div class="row">
+            <input type="text" placeholder="주소" />
+            <button type="button" class="search-btn">검색</button>
+          </div>
+
+          <label>가게 전화번호 <span class="required">*</span></label>
+          <input type="text" placeholder="가게 전화번호" />
+
+          <label>대표자 전화번호 <span class="required">*</span></label>
+          <input type="text" placeholder="대표자 전화번호" />
+
+          <label class="waste-label">
+            기름 배출량 유형 <span class="required">*</span>
+          </label>
+          <div class="waste-buttons">
+            <button type="button">소량 배출 <br> (1~5L/주)</button>
+            <button type="button">중량 배출 <br> (6~20L/주)</button>
+            <button type="button">대량 배출 <br> (20L이상/주)</button>
+            <button type="button">일시적 배출</button>
+          </div>
+
+          <button type="submit" class="submit-btn">업체 등록하기</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
