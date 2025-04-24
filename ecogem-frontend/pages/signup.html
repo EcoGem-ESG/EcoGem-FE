@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=360, user-scalable=no">
+  <title>회원가입 - EcoGem</title>
+  <link rel="stylesheet" href="../css/signup-style.css">
+</head>
+<body>
+  <div class="mobile-frame">
+    <div class="scroll-area">
+      <div class="signup-container">
+        <div class="header">
+          <img src="../assets/EcoGem_titleLogo.png" class="logo" alt="EcoGem">
+          <h2>회원가입</h2>
+        </div>
+
+        <form>
+          <div class="form-group">
+            <label>아이디 <span class="required">*</span></label>
+            <div class="row">
+              <input type="text" placeholder="아이디">
+              <button type="button" class="check-btn">중복 확인</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>비밀번호 <span class="required">*</span></label>
+            <input type="password" placeholder="비밀번호">
+          </div>
+
+          <div class="form-group">
+            <label>비밀번호 확인 <span class="required">*</span></label>
+            <input type="password" placeholder="비밀번호 확인">
+          </div>
+
+          <div class="form-group">
+            <label>이메일 <span class="required">*</span></label>
+            <input type="email" placeholder="이메일">
+          </div>
+
+          <div class="form-group horizontal">
+            <label class="inline-label">역할 <span class="required">*</span></label>
+            <div class="role-buttons-inline">
+              <button type="button">가게 사장님 (폐기름 판매업체)</button>
+              <button type="button">정제 업체 / 수거 업체 직원</button>
+            </div>
+          </div>
+          
+
+          <button type="submit" class="submit-btn">회원가입</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
