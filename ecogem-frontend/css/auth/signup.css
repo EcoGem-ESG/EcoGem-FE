@@ -1,0 +1,143 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #F0EEE5;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  min-height: 100vh; 
+}
+
+.mobile-frame {
+  width: 360px;
+  height: 100vh; 
+  background-color: #F0EEE5;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-area {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.signup-container {
+  width: 300px;
+  padding: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background-color: #F0EEE5;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px;
+}
+
+.logo {
+  width: 40px;
+  height: auto;
+}
+
+h2 {
+  margin-top: 18px;
+  font-size: 20px;
+  color: #333;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.required {
+  color: red;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.check-btn {
+  padding-right: 10px;
+  padding-left: 10px;
+  height: 34px;
+  margin-top: 8px;
+  border: none;
+  background-color: rgb(207, 207, 207);
+  color: black;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.form-group.horizontal {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.inline-label {
+  min-width: 40px;
+  margin-top: 20px;
+}
+
+.role-buttons-inline {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.role-buttons-inline button {
+  border: 1px solid #ccc;
+  color: black;
+  background-color: white;
+  border-radius: 25px;
+  padding: 12px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  max-width: 220px;
+  white-space: nowrap;
+}
+
+.submit-btn {
+  background-color: #759e68;
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  border-radius: 25px;
+  margin-top: 20px;
+  cursor: pointer;
+}
