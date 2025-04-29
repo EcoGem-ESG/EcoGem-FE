@@ -1,0 +1,172 @@
+/* store용 post-detail.css */
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0eee5;
+  }
+  
+  .mobile-frame {
+    width: 360px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0eee5;
+    position: relative;
+  }
+  
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f0eee5;
+    border-bottom: 1px solid #ddd;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .back-btn,
+  .menu-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 20px 70px;
+  }
+  
+  .post-detail {
+    padding: 20px 0;
+  }
+  
+  .post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+  }
+  
+  .profile-icon {
+    width: 40px;
+    height: 40px;
+    background: #ccc;
+    border-radius: 50%;
+  }
+  
+  .info {
+    flex: 1;
+  }
+  
+  .name {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  
+  .badge {
+    background: #aaa;
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    margin-top: 6px;
+  }
+  
+  .post-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  
+  .post-actions button {
+    background: #eee;
+    border: none;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .post-content {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+  }
+  
+  hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #ddd;
+  }
+  
+  .comments-section h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+  }
+  
+  .comment {
+    margin-bottom: 15px;
+  }
+  
+  .comment.reply {
+    margin-left: 15px;
+  }
+  
+  .comment-author {
+    font-weight: bold;
+    margin-bottom: 3px;
+  }
+  
+  .comment-text {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .comment-actions {
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+  }
+  
+  .comment-input {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 360px;
+    display: flex;
+    border-top: 1px solid #ccc;
+    background: white;
+    padding: 10px;
+  }
+  
+  .comment-input input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+  }
+  
+  .comment-input .submit-btn {
+    margin-left: 10px;
+    background-color: #759e68;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
