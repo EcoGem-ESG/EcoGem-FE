@@ -42,13 +42,47 @@ document.addEventListener("DOMContentLoaded", function() {
     const editButtons = document.querySelectorAll(".edit-btn");
     const deleteButtons = document.querySelectorAll(".delete-btn");
 
+    // 메뉴 버튼 클릭 시 수정 팝업 열기
+    const popup = document.getElementById("edit-popup");
+    const closePopup = document.querySelector(".popup-close");
+
     editButtons.forEach(button => {
         button.addEventListener("click", function() {
-            alert("수정 버튼 클릭됨"); // 실제 수정 로직을 여기에 추가할 수 있습니다.
+            popup.style.display = "flex"; // 팝업 열기
 
-            event.stopPropagation();  // 메뉴 옵션을 숨기지 않도록 이벤트 전달 방지
+            // 클릭한 메뉴 버튼에 해당하는 수거 기록 정보를 팝업에 반영
+            /* 나중에 수정해야 함*/
+            const recordItem = this.closest(".record-item");
+            const quantity = recordItem.querySelector(".quantity").textContent.split(" ")[0];
+            const price = recordItem.querySelector(".price").textContent.split("원")[0].trim();
+            const total = recordItem.querySelector(".total").textContent.split("총 ")[1].trim();
+            const storeName = recordItem.querySelector(".store-name").textContent;
+            const date = recordItem.closest('.date-record').querySelector('.date').textContent;
+
+            // 팝업에 내용 반영
+            document.getElementById("edit-date").value = date;
+            document.getElementById("edit-store").value = storeName;
+            document.getElementById("edit-quantity").value = quantity;
+            document.getElementById("edit-price").value = price;
+            document.getElementById("edit-total").value = total;
         });
     });
+
+    // 팝업 닫기 버튼 클릭 시 팝업 닫기
+    closePopup.addEventListener("click", function() {
+        popup.style.display = "none"; // 팝업 닫기
+    });
+
+    // 수정 폼 제출 시
+    const editForm = document.getElementById("edit-form");
+    editForm.addEventListener("submit", function(event) {
+        event.preventDefault(); // 폼 제출 기본 동작 방지
+
+        // 수정된 데이터를 처리하는 로직을 추가
+        alert("수정된 수거 기록이 저장되었습니다.");
+        popup.style.display = "none"; // 팝업 닫기
+    });
+
 
     deleteButtons.forEach(button => {
         button.addEventListener("click", function() {
