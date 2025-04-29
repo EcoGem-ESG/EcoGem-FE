@@ -11,6 +11,8 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #f0eee5;
+    overflow-y: auto;
+    padding-bottom: 80px;
 }
 
 .board-header {
@@ -35,75 +37,86 @@ h2 {
     flex-grow: 1;
 }
 
-.date-range-select {
-    padding: 10px 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-}
-
-.date-range-select input {
-    padding: 6px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    margin: 0 5px;
-}
-
-.generate-report-btn {
+.company-info {
+    padding: 20px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
-    padding: 12px;
-    background-color: #759e68;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    display: block;
     width: 80%;
 }
 
-.generate-report-btn:hover {
+/* Profile Section */
+.profile {
+    display: flex;
+    align-items: center;
+}
+
+.profile-img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.company-name {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.info-edit-btn {
+    margin-left: 130px;
+    padding: 5px;
+    background-color: #759e68;
+    color: white;
+    font-size: 12px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: block;
+    width: 20%;
+    text-align: center;
+    text-decoration: none;
+}
+
+.info-edit-btn:hover {
     background-color: #78a77d;
 }
 
-/* 보고서 상태 박스 */
-.status-box {
-    background-color: white;
-    width: 50%;
-    margin: 50px auto;
-    border-radius: 15px;
-    padding: 20px;
+.info {
     margin-top: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.info-item-container {
+    margin-top: 30px;
+}
+
+/* logout/withdrawal 버튼 컨테이너 */
+.logout-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
+    gap: 20px;
+    margin-top: 30px;
 }
 
-.status-box p {
-    font-size: 14px;
-    margin-bottom: 15px;
-}
-
-.download-btn {
+.logout-btn,
+.withdrawal-btn {
+    background-color: #e0e0e0;
+    color: black;
     padding: 12px;
-    background-color: #759e68;
-    color: white;
-    font-size: 16px;
-    border: none;
     border-radius: 25px;
-    cursor: pointer;
-    display: block;
+    border: none;
     width: 80%;
-    margin-top: 10px;
+    cursor: pointer;
 }
 
-.download-btn:hover {
-    background-color: #78a77d;
+.logout-btn:hover,
+.withdrawal-btn:hover {
+    background-color: #c0c0c0;
 }
 
+/* 하단 고정 메뉴바 */
 .bottom-nav {
     position: fixed;
     bottom: 0;

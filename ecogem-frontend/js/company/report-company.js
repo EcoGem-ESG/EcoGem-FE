@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
             statusMessage.textContent = "보고서 생성 중입니다...";
             downloadBtn.style.display = "none";
         } else if (status === "COMPLETED") {
-            statusMessage.textContent = "보고서 생성 완료! 다운로드 준비 중...";
+            statusMessage.textContent = "보고서 생성 완료!";
             downloadBtn.style.display = "block";
             downloadBtn.setAttribute("href", filePath);
         } else if (status === "FAILED") {
