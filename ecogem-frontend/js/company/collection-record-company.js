@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 기록하기 버튼 클릭 시 기록 작성 화면으로 이동
     const addRecordBtn = document.querySelector(".add-record-btn");
     addRecordBtn.addEventListener("click", function() {
-        window.location.href = "/record-create.html"; // 기록 작성 화면으로 이동
+        window.location.href = "collection-record-create.html"; // 기록 작성 화면으로 이동
     });
 
 

@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0eee5;
+}
+
+.mobile-frame {
+    width: 360px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0eee5;
+}
+
+.board-header {
+    position: sticky;
+    top: 0;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0eee5;
+    z-index: 50;
+}
+
+h2 {
+    margin-top: 18px;
+    margin-left: 20px;
+    font-size: 20px;
+    flex-grow: 1;
+}
+
+.back-btn {
+    font-size: 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+.form-container {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.required {
+    color: red;
+}
+
+.form-input {
+    width: 70%;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #fff;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+}
+
+.input-container input {
+    width: 40%;
+}
+
+.input-container span {
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+.submit-btn {
+    padding: 12px;
+    background-color: #759e68;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 20px;
+    display: block;
+    margin: 20px auto;
+    width: 80%;
+    align-items: center;
+    text-align: center;
+}
+
+.submit-btn:hover {
+    background-color: #78a77d;
+}
