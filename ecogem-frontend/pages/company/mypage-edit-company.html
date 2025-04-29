@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=360, user-scalable=no" />
+  <title>정보 수정 - 업체용</title>
+  <link rel="stylesheet" href="../../css/company/mypage-edit-company.css" />
+</head>
+<body>
+  <div class="mobile-frame">
+
+    <!-- 상단 고정 영역 -->
+    <div class="board-header">
+      <a href="mypage-company.html" class="back-btn"><</a>
+      <h2>정보 수정</h2>
+    </div>
+
+    <!-- 폼 컨테이너 -->
+    <div class="form-container">
+      <form id="edit-company-form">
+        <!-- Company Name (readonly) -->
+        <div class="form-group">
+          <label for="company-name">업체명</label>
+          <input type="text" id="company-name" class="form-input" value="업체명" readonly />
+        </div>
+
+        <!-- Address -->
+        <div class="form-group">
+          <label for="company-address">위치 (주소)</label>
+          <input type="text" id="company-address" class="form-input" placeholder="주소를 입력하세요" required />
+        </div>
+
+        <!-- Contact Person -->
+        <div class="form-group">
+          <label for="contact-name">담당자 이름 </label>
+          <input type="text" id="contact-name" class="form-input" placeholder="담당자명을 입력하세요" required />
+        </div>
+
+        <!-- Waste Types -->
+        <div class="form-group">
+          <label for="waste-types">정제 가능 폐기물 종류</label>
+          <input type="text" id="waste-types" class="form-input" placeholder="식용유 폐기물, 동물성 지방 폐기물" required />
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label for="phone-number">전화번호 </label>
+          <input type="tel" id="phone-number" class="form-input" placeholder="02-1234-5678" required />
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="submit-btn">수정 완료</button>
+      </form>
+    </div>
+
+    <!-- 하단 메뉴바는 그대로 유지 -->
+    <div class="bottom-nav">
+      <a href="board-company.html" class="nav-item">게시판</a>
+      <a href="store-list.html" class="nav-item">가게 리스트</a>
+      <a href="collection-record-company.html" class="nav-item">수거 기록</a>
+      <a href="report-company.html" class="nav-item">보고서</a>
+      <a href="mypage-company.html" class="nav-item active">마이페이지</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

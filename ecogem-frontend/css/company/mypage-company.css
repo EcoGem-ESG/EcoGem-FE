@@ -11,7 +11,7 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #f0eee5;
-    overflow-y: auto; /* Allow scrolling */
+    overflow-y: auto;
     padding-bottom: 80px;
 }
 
@@ -43,7 +43,7 @@ h2 {
     border-radius: 15px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin: 20px auto;
-    width:80%;
+    width: 80%;
 }
 
 /* Profile Section */
@@ -65,8 +65,8 @@ h2 {
 }
 
 .info-edit-btn {
-    margin-left: 140px;
-    padding: 6px;
+    margin-left: 130px;
+    padding: 5px;
     background-color: #759e68;
     color: white;
     font-size: 12px;
@@ -76,6 +76,7 @@ h2 {
     display: block;
     width: 20%;
     text-align: center;
+    text-decoration: none;
 }
 
 .info-edit-btn:hover {
@@ -95,7 +96,7 @@ h2 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap:20px;               
+    gap: 20px;
     margin-top: 30px;
 }
 
@@ -139,6 +140,7 @@ h2 {
     color: #777;
     position: relative;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .nav-item.active {

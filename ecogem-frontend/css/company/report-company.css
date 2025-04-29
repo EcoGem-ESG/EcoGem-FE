@@ -127,6 +127,7 @@ h2 {
     color: #777;
     position: relative;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .nav-item.active {

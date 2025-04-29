@@ -1,0 +1,117 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0eee5;
+  }
+  
+  .mobile-frame {
+    width: 360px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0eee5;
+    overflow-y: auto; /* scrollable */
+  }
+  
+  .board-header {
+    position: sticky;
+    top: 0;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0eee5;
+    z-index: 50;
+  }
+  
+  .back-btn {
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+  }
+  
+  h2 {
+    font-size: 20px;
+    flex-grow: 1;
+    margin-left: 20px;
+  }
+  
+  .form-container {
+    padding: 20px;
+    flex: 1;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  
+  .form-input {
+    width: 80%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #fff;
+  }
+
+  #company-name {
+    background-color: #f0f0f0;
+}
+  
+  .submit-btn {
+    width: 60%;
+    padding: 12px;
+    background-color: #759e68;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 10px;
+    display: block;
+    margin: 20px auto;
+    margin-top: 40px;
+  }
+  
+  .submit-btn:hover {
+    background-color: #78a77d;
+  }
+  
+  /* bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 360px;
+    height: 45px;
+    background-color: white;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    font-size: 12px;
+  }
+  
+  .nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    color: #777;
+    text-decoration: none;
+  }
+  
+  .nav-item.active {
+    color: black;
+    background-color: #e0e0e0;
+  }
+  
