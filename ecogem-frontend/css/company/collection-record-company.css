@@ -1,0 +1,204 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0eee5;
+}
+
+.mobile-frame {
+    width: 360px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0eee5;
+}
+
+.board-header {
+    position: sticky;
+    top: 0;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0eee5;
+    z-index: 50;
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+h2 {
+    margin-top: 18px;
+    font-size: 20px;
+    flex-grow: 1;
+}
+
+
+.date-range-select {
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+
+.date-range-select input {
+    padding: 6px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+}
+
+
+.post-list {
+    flex: 1;
+    padding: 10px 20px;
+    margin-bottom: 80px;
+}
+
+.date-record {
+    background-color: white;
+    border-radius: 15px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.date {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.divider {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 12px;
+}
+
+.record-item {
+    position: relative;
+    /* 메뉴가 해당 위치에 뜨도록 설정 */
+    padding: 12px;
+    margin-bottom: 12px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.store-name-and-menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.store-name {
+    font-weight: bold;
+}
+
+.menu-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #777;
+}
+
+.post-details {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.quantity,
+.price,
+.total {
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+.menu-options {
+    display: none;
+    position: absolute;
+    top: 30px;
+    right: 10px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-top: 10px;
+    /* 메뉴 버튼 아래에 위치하게 설정 */
+    padding: 10px;
+    z-index: 40;
+}
+
+.menu-btn:focus+.menu-options,
+.menu-options:hover {
+    display: block;
+}
+
+.edit-btn,
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+    background-color: #b0b0b0;
+}
+
+.add-record-btn {
+    position: fixed;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(40%);
+    background-color: #759e68;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    z-index: 99;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 360px;
+    height: 45px;
+    background-color: white;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    font-size: 12px;
+    z-index: 99;
+}
+
+.nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    color: #777;
+    position: relative;
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: black;
+    background-color: #e0e0e0;
+}
