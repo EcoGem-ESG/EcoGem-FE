@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=360, user-scalable=no" />
+    <title>보고서 - 업체용</title>
+    <link rel="stylesheet" href="../../css/company/report-company.css" />
+</head>
+
+<body>
+    <div class="mobile-frame">
+
+        <!-- 상단 고정 영역 -->
+        <div class="board-header">
+            <img src="../../assets/EcoGem_titleLogo.png" class="logo" />
+            <h2>보고서</h2>
+        </div>
+
+        <!-- 날짜 선택 -->
+        <div class="date-range-select">
+            <input type="date" id="start-date" />
+            <span> ~ </span>
+            <input type="date" id="end-date" />
+        </div>
+
+        <!-- 보고서 생성 버튼 -->
+        <button id="generate-report" class="generate-report-btn">ESG 보고서 AI 자동 생성하기</button>
+
+        <!-- 상태에 따라 동적으로 변하는 보고서 영역 -->
+        <div id="report-status" class="status-box">
+            <!-- 기본 상태 메시지 -->
+            <p id="status-message">보고서 상태가 표시됩니다.</p>
+            <button id="download-report" class="download-btn" style="display: none;">word 다운로드</button>
+        </div>
+
+        <!-- 하단 고정 메뉴바 -->
+        <div class="bottom-nav">
+            <a href="board-company.html" class="nav-item">게시판</a>
+            <a href="store-list.html" class="nav-item">가게 리스트</a>
+            <a href="collection-record-company.html" class="nav-item">수거 기록</a>
+            <a href="report-company.html" class="nav-item active">보고서</a>
+            <a href="mypage-company.html" class="nav-item">마이페이지</a>
+        </div>
+    </div>
+
+    <script src="../../js/company/report-company.js"></script>
+</body>
+
+</html>
