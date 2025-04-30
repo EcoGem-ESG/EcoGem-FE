@@ -2,19 +2,20 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background-color: #f0eee5;
-  }
-  
-  .mobile-frame {
+}
+
+.mobile-frame {
     width: 360px;
     margin: auto;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     background-color: #f0eee5;
-    overflow-y: auto; /* scrollable */
-  }
-  
-  .board-header {
+    overflow-y: auto;
+    /* scrollable */
+}
+
+.board-header {
     position: sticky;
     top: 0;
     padding: 20px;
@@ -23,51 +24,51 @@ body {
     gap: 10px;
     background-color: #f0eee5;
     z-index: 50;
-  }
-  
-  .back-btn {
+}
+
+.back-btn {
     font-size: 18px;
     color: #333;
     text-decoration: none;
-  }
-  
-  h2 {
+}
+
+h2 {
     font-size: 20px;
     flex-grow: 1;
     margin-left: 20px;
-  }
-  
-  .form-container {
+}
+
+.form-container {
     padding: 20px;
     flex: 1;
-  }
-  
-  .form-group {
+}
+
+.form-group {
     margin-bottom: 20px;
-  }
-  
-  .form-group label {
+}
+
+.form-group label {
     display: block;
     font-size: 14px;
     color: #333;
     margin-bottom: 5px;
-  }
-  
-  
-  .form-input {
+}
+
+
+.form-input {
     width: 80%;
     padding: 10px;
     border-radius: 10px;
     border: 1px solid #ccc;
     font-size: 14px;
     background-color: #fff;
-  }
+}
 
-  #company-name {
+#store-name {
     background-color: #f0f0f0;
 }
-  
-  .submit-btn {
+
+.submit-btn {
     width: 60%;
     padding: 12px;
     background-color: #759e68;
@@ -80,11 +81,8 @@ body {
     display: block;
     margin: 20px auto;
     margin-top: 40px;
-  }
-  
-  .submit-btn:hover {
+}
+
+.submit-btn:hover {
     background-color: #78a77d;
-  }
-  
- 
-  
+}
