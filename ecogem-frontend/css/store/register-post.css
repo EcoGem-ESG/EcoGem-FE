@@ -1,0 +1,76 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0eee5;
+  }
+  
+  .mobile-frame {
+    width: 360px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0eee5;
+  }
+
+  .scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 80px
+}
+  
+  .board-header {
+    position: sticky;
+    top: 0;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0eee5;
+    z-index: 50;
+  }
+  
+  .back-arrow {
+    font-size: 18px;
+    color: #333;
+    text-decoration: none;
+  }
+  
+  h2 {
+    margin-left: 20px;
+    font-size: 20px;
+    flex-grow: 1;
+  }
+  
+  .post-content-input {
+    margin-bottom: 15px;
+    width: 90%;
+    height: 500px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: #fff;
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .submit-btn {
+    width: 70%;
+    padding: 12px;
+    background-color: #759e68;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 40px;
+    margin-left: auto; 
+    margin-right: auto; 
+    display: block;
+  }
+  
+  .submit-btn:hover {
+    background-color: #78a77d;
+  }
+  
