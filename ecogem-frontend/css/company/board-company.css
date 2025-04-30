@@ -16,18 +16,20 @@ body {
 .scroll-area {
     flex: 1;
     overflow-y: auto;
-    padding-bottom: 45px /* 메뉴바 높이만큼 공간 확보 */
+    padding-bottom: 45px
+        /* 메뉴바 높이만큼 공간 확보 */
 }
 
 .board-header {
-    position: sticky;   /* 스크롤해도 고정 */
-    top: 0;            
+    position: sticky;
+    /* 스크롤해도 고정 */
+    top: 0;
     padding: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: #f0eee5; 
-    z-index: 50;   
+    background-color: #f0eee5;
+    z-index: 50;
 }
 
 .logo {
@@ -97,10 +99,12 @@ h2 {
     font-size: 14px;
     color: #333;
     text-align: left;
-    white-space: nowrap; /* 한 줄로 제한 */
+    white-space: nowrap;
+    /* 한 줄로 제한 */
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: pointer; /* 클릭 가능한 표시 */
+    cursor: pointer;
+    /* 클릭 가능한 표시 */
     padding-right: 20px;
 }
 
@@ -140,6 +144,7 @@ h2 {
     color: #777;
     position: relative;
     cursor: pointer;
+    text-decoration: none;
 }
 
 /* 메뉴 사이에 세로 구분선 */
