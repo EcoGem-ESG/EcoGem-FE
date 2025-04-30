@@ -1,0 +1,145 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f0eee5;
+}
+
+.mobile-frame {
+    width: 360px;
+    margin: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f0eee5;
+}
+
+.scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 45px /* 메뉴바 높이만큼 공간 확보 */
+}
+
+.board-header {
+    position: sticky;   /* 스크롤해도 고정 */
+    top: 0;            
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #f0eee5; 
+    z-index: 50;   
+}
+
+.logo {
+    width: 40px;
+    height: auto;
+}
+
+h2 {
+    margin-top: 18px;
+    font-size: 20px;
+    flex-grow: 1;
+}
+
+.register-post-btn {
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #759e68;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    width: 45%;
+    margin-left: 30px;
+}
+
+.register-post-btn:hover {
+    background-color: #78a77d;
+}
+
+
+.post-list {
+    flex: 1;
+    padding: 10px 20px;
+}
+
+.post-card {
+    position: relative;
+    background: white;
+    border-radius: 15px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.store-name {
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.post-content {
+    font-size: 14px;
+    color: #333;
+    text-align: left;
+    white-space: nowrap; /* 한 줄로 제한 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer; /* 클릭 가능한 표시 */
+    padding-right: 20px;
+}
+
+.badge {
+    position: absolute;
+    top: 3px;
+    right: 12px;
+    font-size: 12px;
+    background: #ccc;
+    padding: 4px 8px;
+    border-radius: 10px;
+    margin-top: 8px;
+    display: inline-block;
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 360px;
+    height: 45px;
+    background-color: white;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+    align-items: stretch;
+    /* 아이템이 전체 높이 채우도록 */
+    font-size: 12px;
+    z-index: 99;
+}
+
+.nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+    color: #777;
+    position: relative;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* 메뉴 사이에 세로 구분선 */
+.nav-item:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 12px;
+    right: 0;
+    width: 1px;
+    height: 50%;
+    background-color: #ccc;
+}
+
+.nav-item.active {
+    color: black;
+    background-color: #e0e0e0;
+}
