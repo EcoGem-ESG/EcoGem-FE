@@ -16,7 +16,7 @@ body {
 .scroll-area {
     flex: 1;
     overflow-y: auto;
-    padding-top: 30px;
+    padding-top: 10px;
     padding-bottom: 45px /* 메뉴바 높이만큼 공간 확보 */
 }
 
@@ -42,23 +42,23 @@ h2 {
     flex-grow: 1;
 }
 
-.register-post {
+.register-post-btn {
     display: block;
     text-align: center;
     margin-bottom: 40px;
-    padding: 10px;
+    padding: 8px;
     background-color: #759e68;
     color: white;
     font-size: 16px;
     border: none;
     border-radius: 15px;
     cursor: pointer;
-    width: 45%;
+    width: 38%;
     margin-left: 30px;
     text-decoration: none;
 }
 
-.register-post:hover {
+.register-post-btn:hover {
     background-color: #78a77d;
 }
 
