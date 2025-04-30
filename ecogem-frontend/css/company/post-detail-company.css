@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
-    background-color: #ffffff;
+    background-color: #f0eee5;
 }
 
 .mobile-frame {
@@ -28,9 +28,11 @@ body {
 
 .back-btn {
     background: none;
+    color:black;
     border: none;
     font-size: 20px;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .scroll-area {
@@ -71,7 +73,7 @@ body {
 }
 
 .badge {
-    background: #91b48c;
+    background: #759e68;
     color: white;
     padding: 4px 10px;
     font-size: 12px;
@@ -106,20 +108,23 @@ hr {
     margin-bottom: 10px;
 }
 
+/* 새로 추가할 스타일 */
 .comment.reply {
     margin-left: 40px;
     position: relative;
-}
-
-.comment.reply::before {
-    content: "\2192";
-    /* 화살표 → */
+  }
+  
+  .comment.reply::before {
+    content: "";
     position: absolute;
-    left: -20px;
-    top: 12px;
-    font-size: 14px;
-    color: #aaa;
-}
+    left: -25px;       
+    top: 12px;        
+    width: 16px;        
+    height: 16px;       
+    background: url('../../assets/reply-arrow.png') no-repeat center center;
+    background-size: contain;
+  }
+  
 
 .comment-text {
     font-size: 14px;
@@ -135,29 +140,33 @@ hr {
     color: #555;
 }
 
-.menu-popup {
+.menu-list {
     position: absolute;
-    top: 30px;
+    top: 35px;
     right: 0;
     background: white;
     border: 1px solid #ccc;
     border-radius: 6px;
     list-style: none;
-    padding: 0;
+    padding: 5px;
     margin: 0;
     display: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     z-index: 10;
 }
 
-.menu-popup li {
+#post-menu-list {
+    right: 10px;
+}
+
+.menu-list li {
     padding: 8px 12px;
     font-size: 14px;
     cursor: pointer;
     white-space: nowrap;
 }
 
-.menu-popup li:hover {
+.menu-list li:hover {
     background-color: #eee;
 }
 
@@ -166,7 +175,7 @@ hr {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 360px;
+    width: 340px;
     display: flex;
     background: white;
     border-top: 1px solid #ccc;
@@ -184,7 +193,7 @@ hr {
 .submit-btn {
     margin-left: 10px;
     padding: 0 16px;
-    background-color: #91b48c;
+    background-color: #759e68;
     color: white;
     border: none;
     border-radius: 25px;

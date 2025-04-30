@@ -12,9 +12,13 @@
 
     <!-- 상단 바 -->
     <div class="top-bar">
-      <button class="back-btn"><</button>
+      <a href="board-company.html" class="back-btn">&lt;</a>
       <div class="spacer"></div>
       <button class="menu-btn">⋮</button>
+      <ul id="post-menu-list" class="menu-list">
+        <li>수정</li>
+        <li>삭제</li>
+      </ul>
     </div>
 
     <!-- 스크롤 영역 -->
@@ -50,8 +54,8 @@
                 <div class="comment-author">업체명</div>
                 <div class="timestamp">2025-04-29 14:02</div>
               </div>
-              <button class="menu-btn" onclick="toggleMenu(this)">⋮</button>
-              <ul class="menu-popup">
+              <button class="menu-btn">⋮</button>
+              <ul class="menu-list">
                 <li>수정</li>
                 <li>삭제</li>
               </ul>
@@ -67,8 +71,8 @@
                 <div class="comment-author">가게 이름</div>
                 <div class="timestamp">2025-04-29 14:05</div>
               </div>
-              <button class="menu-btn" onclick="toggleMenu(this)">⋮</button>
-              <ul class="menu-popup">
+              <button class="menu-btn">⋮</button>
+              <ul class="menu-list">
                 <li>수정</li>
                 <li>삭제</li>
               </ul>
@@ -83,8 +87,8 @@
                 <div class="comment-author">업체명</div>
                 <div class="timestamp">2025-04-29 14:10</div>
               </div>
-              <button class="menu-btn" onclick="toggleMenu(this)">⋮</button>
-              <ul class="menu-popup">
+              <button class="menu-btn">⋮</button>
+              <ul class="menu-list">
                 <li>수정</li>
                 <li>삭제</li>
               </ul>
@@ -103,5 +107,7 @@
     </div>
 
   </div>
+
+  <script src="../../js/company/post-deatil-company.js"></script>
 </body>
 </html>
