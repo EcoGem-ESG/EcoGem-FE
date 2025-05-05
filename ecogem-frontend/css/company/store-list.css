@@ -91,20 +91,11 @@ h2 {
   align-items: center;
 }
 
-.store-card .profile {
+
+.store-card .store-name {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.store-card .profile-icon {
-  width: 36px;
-  height: 36px;
-  background-color: #ddd;
-  border-radius: 50%;
-}
-
-.store-card .store-name {
   font-weight: bold;
 }
 
