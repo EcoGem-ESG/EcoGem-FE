@@ -26,101 +26,8 @@
 
         <!-- 수거 기록 리스트 -->
         <div class="post-list">
-            <!-- 날짜 별 수거기록 -->
-            <div class="date-record">
-                <div class="date">2025.03.01</div>
-                <div class="divider"></div>
-                <div class="record-item">
-                    <div class="store-name-and-menu">
-                        <div class="store-name">맘스터치 성신여대점</div>
-                        <button class="menu-btn">⋮</button>
-                        <div class="menu-options">
-                            <button class="edit-btn">수정</button>
-                            <button class="delete-btn">삭제</button>
-                        </div>
-                    </div>
-                    <div class="collected-by-and-name">
-                        <div class="collected-by">수거인: </div>
-                        <div class="name">Kim</div>
-                    </div>
-                    <div class="post-details">
-                        <div class="quantity">5L 수거</div>
-                        <div class="price">1,500원/L</div>
-                        <div class="total">총 7,500원</div>
-                    </div>
-                </div>
-                <div class="record-item">
-                    <div class="store-name-and-menu">
-                        <div class="store-name">위라이스 성신여대점</div>
-                        <button class="menu-btn">⋮</button>
-
-                        <div class="menu-options">
-                            <button class="edit-btn">수정</button>
-                            <button class="delete-btn">삭제</button>
-                        </div>
-                    </div>
-                    <div class="collected-by-and-name">
-                        <div class="collected-by">수거인: </div>
-                        <div class="name">Kim</div>
-                    </div>
-                    <div class="post-details">
-                        <div class="quantity">6L 수거</div>
-                        <div class="price">1,500원/L</div>
-                        <div class="total">총 9,000원</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="date-record">
-                <div class="date">2025.02.28</div>
-                <div class="divider"></div>
-                <div class="record-item">
-                    <div class="store-name-and-menu">
-                        <div class="store-name">가게 이름</div>
-                        <button class="menu-btn">⋮</button>
-
-                        <div class="menu-options">
-                            <button class="edit-btn">수정</button>
-                            <button class="delete-btn">삭제</button>
-                        </div>
-                    </div>
-                    <div class="collected-by-and-name">
-                        <div class="collected-by">수거인: </div>
-                        <div class="name">Lee</div>
-                    </div>
-                    <div class="post-details">
-                        <div class="quantity">10L 수거</div>
-                        <div class="price">12,000원/L</div>
-                        <div class="total">총 12,000원</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="date-record">
-                <div class="date">2025.02.27</div>
-                <div class="divider"></div>
-                <div class="record-item">
-                    <div class="store-name-and-menu">
-                        <div class="store-name">가게 이름</div>
-                        <button class="menu-btn">⋮</button>
-
-                        <div class="menu-options">
-                            <button class="edit-btn">수정</button>
-                            <button class="delete-btn">삭제</button>
-                        </div>
-                    </div>
-                    <div class="collected-by-and-name">
-                        <div class="collected-by">수거인: </div>
-                        <div class="name">Lee</div>
-                    </div>
-                    <div class="post-details">
-                        <div class="quantity">10L 수거</div>
-                        <div class="price">12,000원/L</div>
-                        <div class="total" >총 12,000원</div>
-                    </div>
-                </div>
-            </div>
-
+            <!-- 날짜 별 수거기록 --> <!--JS-->
+            
             <button class="add-record-btn">＋ 기록하기</button>
 
             <!-- 수거 기록 수정 팝업 -->
@@ -134,6 +41,9 @@
 
                         <label for="edit-store">계약한 가게 이름:</label>
                         <input type="text" id="edit-store" value="맘스터치 성신여대점" readonly />
+
+                        <label for="edit-collected-by">수거인:</label>
+                        <input type="text" id="edit-collected-by" value="Kim" />
 
                         <label for="edit-quantity">수거량 (L):</label>
                         <div class="input-container">
