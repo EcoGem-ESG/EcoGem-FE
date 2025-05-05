@@ -1,102 +1,232 @@
-document.addEventListener("DOMContentLoaded", function() {
-   
-    // 모든 메뉴 버튼을 선택
-    const menuButtons = document.querySelectorAll(".menu-btn");
+document.addEventListener("DOMContentLoaded", () => {
+    const baseURL = "http://localhost:8080";
+    const startInput = document.getElementById("start-date");
+    const endInput = document.getElementById("end-date");
+    const postList = document.querySelector(".post-list");
+    const addRecordBtn = document.querySelector(".add-record-btn");
+    const popup = document.getElementById("edit-popup");
+    const closeBtn = document.querySelector(".popup-close");
+    const editForm = document.getElementById("edit-form");
+    const qtyInput = document.getElementById("edit-quantity");
+    const priceInput = document.getElementById("edit-price");
+    const totalInput = document.getElementById("edit-total");
 
-    // 각 메뉴 버튼에 대해 클릭 이벤트 추가
-    menuButtons.forEach(button => {
-        button.addEventListener("click", function() {
-            // 클릭된 메뉴 버튼의 부모 요소인 record-item을 찾기
-            const recordItem = this.closest(".record-item");
-            
-            // 해당 record-item 안에 있는 메뉴 옵션(toggle)
-            const menuOptions = recordItem.querySelector(".menu-options");
-            
-            // 메뉴 옵션이 보이면 숨기고, 숨겨져 있으면 보이도록 설정
-            if (menuOptions.style.display === "block") {
-                menuOptions.style.display = "none";
-            } else {
-                menuOptions.style.display = "block";
-            }
+    // ▶ 테스트용 하드코딩 (인증 연동 후 제거)
+    const userId = 1;
+    const userRole = "COMPANY_WORKER";
 
-            
-            // 클릭된 메뉴 버튼의 이벤트가 다른 곳으로 전달되지 않도록 막기
-            event.stopPropagation();
-        });
-    });
-    
-    // 화면의 다른 부분을 클릭했을 때 메뉴 옵션을 숨김
-    document.addEventListener("click", function(event) {
-        // 클릭한 요소가 메뉴 버튼이 아니고, 메뉴 옵션도 아니면
-        if (!event.target.closest(".menu-btn") && !event.target.closest(".menu-options")) {
-            // 모든 메뉴 옵션 숨기기
-            const allMenuOptions = document.querySelectorAll(".menu-options");
-            allMenuOptions.forEach(menuOption => {
-                menuOption.style.display = "none";
+    // 1) 날짜 변경 또는 초기 로드 시
+    startInput.addEventListener("change", fetchRecords);
+    endInput.addEventListener("change", fetchRecords);
+    fetchRecords();
+
+    // —— 백엔드에서 데이터 가져오기
+    async function fetchRecords() {
+        let url = `${baseURL}/api/collection-records?user_id=${userId}&role=${userRole}`;
+        if (startInput.value && endInput.value) {
+            url += `&start_date=${startInput.value}&end_date=${endInput.value}`;
+        }
+
+        try {
+            console.log("▶ GET", url);
+            const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
+            const body = await res.json();
+            console.log("👈 응답", body.records);
+            renderRecords(body.records);
+        } catch (err) {
+            console.error(err);
+            alert("데이터를 불러오는 중 오류가 발생했습니다.");
+        }
+    }
+
+    // —— 같은 날짜끼리 그룹핑하여 렌더링
+    function renderRecords(records) {
+        // 1) 기존 렌더링된 date-record 블록 삭제
+        postList.querySelectorAll(".date-record").forEach(el => el.remove());
+
+        // 2) 날짜별 그룹핑
+        const grouped = records.reduce((acc, r) => {
+            // r.collected_at 은 "YYYY-MM-DD" 형태 가정
+            const key = r.collected_at;
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(r);
+            return acc;
+        }, {});
+
+        // 3) 날짜 내림차순 정렬하여 각 그룹 렌더링
+        Object.keys(grouped)
+            .sort((a, b) => b.localeCompare(a))
+            .forEach(dateKey => {
+                // date-record 컨테이너 생성
+                const wrapper = document.createElement("div");
+                wrapper.className = "date-record";
+                wrapper.innerHTML = `
+            <div class="date">${dateKey.replace(/-/g, ".")}</div>
+            <div class="divider"></div>
+          `;
+
+                // 해당 날짜의 각 record-item 추가
+                grouped[dateKey].forEach(r => {
+                    const item = document.createElement("div");
+                    item.className = "record-item";
+
+                    item.dataset.id = r.record_id;
+
+                    item.innerHTML = `
+              <div class="store-name-and-menu">
+                <div class="store-name">${r.store_name}</div>
+                <button class="menu-btn">⋮</button>
+                <div class="menu-options">
+                  <button class="edit-btn">수정</button>
+                  <button class="delete-btn">삭제</button>
+                </div>
+              </div>
+              <div class="collected-by-and-name">
+                <div class="collected-by">수거인: </div>
+                <div class="collected-by-name">${r.collected_by}</div>
+              </div>
+              <div class="post-details">
+                <div class="quantity">${r.volume_liter}L 수거</div>
+                <div class="price">${r.price_per_liter.toLocaleString()}원/L</div>
+                <div class="total">총 ${r.total_price.toLocaleString()}원</div>
+              </div>
+            `;
+
+                    wrapper.appendChild(item);
+                });
+
+                // + 기록하기 버튼 위에 삽입
+                postList.insertBefore(wrapper, addRecordBtn);
             });
+
+        // 4) 이벤트 바인딩
+        bindMenuEvents();
+    }
+
+
+
+    // —— 메뉴 토글, 수정, 삭제 이벤트
+    function bindMenuEvents() {
+        // 메뉴(⋮) 클릭
+        document.querySelectorAll(".menu-btn").forEach(btn => {
+            btn.addEventListener("click", e => {
+                e.stopPropagation();
+                const opts = btn.closest(".record-item").querySelector(".menu-options");
+                opts.style.display = opts.style.display === "block" ? "none" : "block";
+            });
+        });
+
+        // 수정 버튼
+        document.querySelectorAll(".edit-btn").forEach(btn => {
+            btn.addEventListener("click", e => {
+                e.stopPropagation();
+                openEditPopup(btn.closest(".record-item"));
+            });
+        });
+
+        // 삭제 버튼
+        document.querySelectorAll(".delete-btn").forEach(btn => {
+            btn.addEventListener("click", e => {
+                e.stopPropagation();
+                deleteRecord(btn.closest(".record-item").dataset.id);
+            });
+        });
+
+        // 바깥 클릭 시 메뉴 닫기
+        document.addEventListener("click", () => {
+            document.querySelectorAll(".menu-options").forEach(o => o.style.display = "none");
+        });
+    }
+
+    // ▶ 수거량 또는 단가가 바뀌면 총금액 자동 계산
+    function updateTotal() {
+        const qty = parseFloat(qtyInput.value) || 0;
+        const price = parseFloat(priceInput.value) || 0;
+        totalInput.value = qty * price;
+    }
+
+    qtyInput.addEventListener("input", updateTotal);
+    priceInput.addEventListener("input", updateTotal);
+    // —— 팝업 열기
+    // 팝업 열기 함수
+    function openEditPopup(item) {
+        const id = item.dataset.id;
+        const date = item.closest(".date-record").querySelector(".date")
+            .textContent.replace(/\./g, "-");
+        const store = item.querySelector(".store-name").textContent;
+        const name = item.querySelector(".collected-by-name").textContent;
+        const qty = item.querySelector(".quantity").textContent.split("L")[0];
+        const price = item.querySelector(".price")
+            .textContent.replace(/[^0-9]/g, "");
+        const total = item.querySelector(".total")
+            .textContent.replace(/[^0-9]/g, "");
+
+        editForm.dataset.id = id;
+        editForm["edit-date"].value = date;
+        editForm["edit-store"].value = store;
+        editForm["edit-collected-by"].value = name;
+        editForm["edit-quantity"].value = qty;
+        editForm["edit-price"].value = price;
+        editForm["edit-total"].value = total;
+
+
+        popup.style.display = "flex";
+    }
+
+
+    // —— 팝업 닫기
+    closeBtn.addEventListener("click", () => {
+        popup.style.display = "none";
+    });
+
+    // —— 수정 API
+    editForm.addEventListener("submit", async e => {
+        e.preventDefault();
+        const id = editForm.dataset.id;
+        const payload = {
+            collected_at: editForm["edit-date"].value,
+            collected_by: editForm["edit-collected-by"].value,
+            volume_liter: +editForm["edit-quantity"].value,
+            price_per_liter: +editForm["edit-price"].value,
+            total_price: +editForm["edit-total"].value,
+        };
+
+        try {
+            await fetch(
+                `${baseURL}/api/collection-records/${id}` +
+                `?user_id=${userId}&role=${userRole}`,
+                {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }
+            );
+            popup.style.display = "none";
+            fetchRecords();
+        } catch (err) {
+            console.error(err);
+            alert("수정 중 오류가 발생했습니다.");
         }
     });
 
+    // —— 삭제 API
+    async function deleteRecord(id) {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+        try {
+            await fetch(
+                `${baseURL}/api/collection-records/${id}` +
+                `?user_id=${userId}&role=${userRole}`,
+                { method: "DELETE" }
+            );
+            fetchRecords();
+        } catch (err) {
+            console.error(err);
+            alert("삭제 중 오류가 발생했습니다.");
+        }
+    }
 
-    // 메뉴 옵션(수정, 삭제) 버튼 클릭 시 동작 (수정, 삭제 기능은 임의로 추가할 수 있음)
-    const editButtons = document.querySelectorAll(".edit-btn");
-    const deleteButtons = document.querySelectorAll(".delete-btn");
-
-    // 메뉴 버튼 클릭 시 수정 팝업 열기
-    const popup = document.getElementById("edit-popup");
-    const closePopup = document.querySelector(".popup-close");
-
-    editButtons.forEach(button => {
-        button.addEventListener("click", function() {
-            popup.style.display = "flex"; // 팝업 열기
-
-            // 클릭한 메뉴 버튼에 해당하는 수거 기록 정보를 팝업에 반영
-            /* 나중에 수정해야 함*/
-            const recordItem = this.closest(".record-item");
-            const quantity = recordItem.querySelector(".quantity").textContent.split(" ")[0];
-            const price = recordItem.querySelector(".price").textContent.split("원")[0].trim();
-            const total = recordItem.querySelector(".total").textContent.split("총 ")[1].trim();
-            const storeName = recordItem.querySelector(".store-name").textContent;
-            const date = recordItem.closest('.date-record').querySelector('.date').textContent;
-
-            // 팝업에 내용 반영
-            document.getElementById("edit-date").value = date;
-            document.getElementById("edit-store").value = storeName;
-            document.getElementById("edit-quantity").value = quantity;
-            document.getElementById("edit-price").value = price;
-            document.getElementById("edit-total").value = total;
-        });
+    // —— 기록하기 페이지로 이동
+    addRecordBtn.addEventListener("click", () => {
+        window.location.href = "collection-record-create.html";
     });
-
-    // 팝업 닫기 버튼 클릭 시 팝업 닫기
-    closePopup.addEventListener("click", function() {
-        popup.style.display = "none"; // 팝업 닫기
-    });
-
-    // 수정 폼 제출 시
-    const editForm = document.getElementById("edit-form");
-    editForm.addEventListener("submit", function(event) {
-        event.preventDefault(); // 폼 제출 기본 동작 방지
-
-        // 수정된 데이터를 처리하는 로직을 추가
-        alert("수정된 수거 기록이 저장되었습니다.");
-        popup.style.display = "none"; // 팝업 닫기
-    });
-
-
-    deleteButtons.forEach(button => {
-        button.addEventListener("click", function() {
-            alert("삭제 버튼 클릭됨"); // 실제 삭제 로직을 여기에 추가할 수 있습니다.
-
-            event.stopPropagation();  // 메뉴 옵션을 숨기지 않도록 이벤트 전달 방지
-        });
-    });
-
-    // 기록하기 버튼 클릭 시 기록 작성 화면으로 이동
-    const addRecordBtn = document.querySelector(".add-record-btn");
-    addRecordBtn.addEventListener("click", function() {
-        window.location.href = "collection-record-create.html"; // 기록 작성 화면으로 이동
-    });
-
-
 });
