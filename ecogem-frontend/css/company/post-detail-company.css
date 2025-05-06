@@ -174,17 +174,6 @@ hr {
     background-color: #eee;
 }
 
-/* .comment-input {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 340px;
-    display: flex;
-    background: white;
-    border-top: 1px solid #ccc;
-    padding: 10px;
-} */
 
 .comment-input input {
     flex: 1;

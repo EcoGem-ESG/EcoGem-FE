@@ -1,5 +1,3 @@
-// post-detail-company.js
-
 document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:8080";
 
@@ -96,11 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="profile-icon"></div>
           <div class="info">
             <div class="comment-author">${c.author_name}</div>
-            <div class="timestamp">${c.created_at.replace("T"," ").slice(0,16)}</div>
           </div>
           ${menuHtml}
         </div>
         <div class="comment-text">${c.content}</div>
+        <div class="timestamp">${c.created_at.replace("T"," ").slice(0,16)}</div>
         ${isParent ? `<button class="reply-btn">답글 쓰기</button>` : ""}
       `;
       container.appendChild(div);

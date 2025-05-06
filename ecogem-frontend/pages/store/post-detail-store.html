@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=360, user-scalable=no" />
   <title>게시글 상세 - 가게용</title>
   <link rel="stylesheet" href="../../css/store/post-detail-store.css" />
 </head>
+
 <body>
   <div class="mobile-frame">
 
@@ -24,91 +26,22 @@
 
     <!-- 스크롤 영역 -->
     <div class="scroll-area">
-      <div class="post-detail">
+      <!-- 여기에 JS가 .post-detail 을 생성해서 넣어줍니다 -->
+      <div id="post-detail-container"></div>
 
-        <!-- 게시글 -->
-        <div class="post">
-          <div class="post-header">
-            <div class="profile-icon"></div>
-            <div class="info">
-              <div class="name">가게 이름</div>
-              <div class="timestamp">2025-04-29 14:00</div>
-            </div>
-            <div class="badge">거래완료</div>
-          </div>
-          <div class="post-content">
-            폐기물 판매글 내용 ~~~~~~<br>
-            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          </div>
-        </div>
-        <hr />
+      <hr />
 
-        <!-- 댓글 영역 -->
-        <div class="comments-section">
-          <h3>댓글</h3>
-
-          <!-- 댓글 -->
-          <div class="comment">
-            <div class="comment-header">
-              <div class="profile-icon"></div>
-              <div class="info">
-                <div class="comment-author">업체명</div>
-                <div class="timestamp">2025-04-29 14:02</div>
-              </div>
-              <button class="menu-btn">⋮</button>
-              <ul class="menu-list">
-                <li>수정</li>
-                <li>삭제</li>
-              </ul>
-            </div>
-            <div class="comment-text">폐기물 구매 댓글 내용 ~~~~~</div>
-          </div>
-
-          <!-- 대댓글 -->
-          <div class="comment reply">
-            <div class="comment-header">
-              <div class="profile-icon"></div>
-              <div class="info">
-                <div class="comment-author">가게 이름</div>
-                <div class="timestamp">2025-04-29 14:05</div>
-              </div>
-              <button class="menu-btn">⋮</button>
-              <ul class="menu-list">
-                <li>수정</li>
-                <li>삭제</li>
-              </ul>
-            </div>
-            <div class="comment-text">가게의 대댓글 내용 ~~~~~</div>
-          </div>
-
-          <div class="comment reply">
-            <div class="comment-header">
-              <div class="profile-icon"></div>
-              <div class="info">
-                <div class="comment-author">업체명</div>
-                <div class="timestamp">2025-04-29 14:10</div>
-              </div>
-              <button class="menu-btn">⋮</button>
-              <ul class="menu-list">
-                <li>수정</li>
-                <li>삭제</li>
-              </ul>
-            </div>
-            <div class="comment-text">업체 대댓글 내용 ~~~~~</div>
-          </div>
-
-        </div>
-      </div>
+      <!-- 댓글도 JS가 .comments-section 을 생성해서 넣어줍니다 -->
+      <div id="comments-container"></div>
     </div>
 
-    <!-- 댓글 입력 고정 하단 -->
     <div class="comment-input">
       <input type="text" placeholder="댓글을 입력해주세요." />
       <button class="submit-btn">등록</button>
     </div>
-
   </div>
-
+  
   <script src="../../js/store/post-detail-store.js"></script>
 </body>
+
 </html>
