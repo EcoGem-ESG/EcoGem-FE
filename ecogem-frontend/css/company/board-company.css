@@ -120,6 +120,12 @@ h2 {
     display: inline-block;
 }
 
+/* 판매중일 때만 초록 배경 */
+.badge--active {
+    background-color: #759e68;
+    color:white;
+  }
+
 .bottom-nav {
     position: fixed;
     bottom: 0;
