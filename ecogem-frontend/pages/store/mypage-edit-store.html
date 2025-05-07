@@ -1,55 +1,55 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=360, user-scalable=no" />
-  <title>정보 수정 - 가게용</title>
+  <title>Edit Information - Store</title>
   <link rel="stylesheet" href="../../css/store/mypage-edit-store.css" />
 </head>
 <body>
   <div class="mobile-frame">
 
-    <!-- 상단 고정 영역 -->
+    <!-- Top fixed area -->
     <div class="board-header">
-      <a href="mypage-store.html" class="back-btn"><</a>
-      <h2>정보 수정</h2>
+      <a href="mypage-store.html" class="back-btn">&lt;</a>
+      <h2>Edit Information</h2>
     </div>
 
-    <!-- 폼 컨테이너 -->
+    <!-- Form container -->
     <div class="form-container">
       <form id="edit-store-form">
         <!-- Store Name (readonly) -->
         <div class="form-group">
-          <label for="store-name">업체명</label>
-          <input type="text" id="store-name" class="form-input" value="가게명" readonly />
+          <label for="store-name">Store Name</label>
+          <input type="text" id="store-name" class="form-input" value="Store Name" readonly />
         </div>
 
         <!-- Address -->
         <div class="form-group">
-          <label for="store-address">위치 (주소)</label>
-          <input type="text" id="store-address" class="form-input" placeholder="주소를 입력하세요" required />
+          <label for="store-address">Location (Address)</label>
+          <input type="text" id="store-address" class="form-input" placeholder="Enter address" required />
         </div>
 
         <!-- Store Phone Number -->
         <div class="form-group">
-          <label for="store-phone-number">가게 전화번호</label>
+          <label for="store-phone-number">Store Phone Number</label>
           <input type="tel" id="store-phone-number" class="form-input" placeholder="02-1234-5678" required />
         </div>
 
-        <!-- Exponent Phone Number -->
+        <!-- Owner Phone Number -->
         <div class="form-group">
-          <label for="exponent-phone-number">대표자 전화번호</label>
-          <input type="tel" id="exponent-phone-number" class="form-input" placeholder="010-0000-0000" required />
+          <label for="owner-phone-number">Owner Phone Number</label>
+          <input type="tel" id="owner-phone-number" class="form-input" placeholder="010-0000-0000" required />
         </div>
 
         <!-- Oil Emission Type -->
         <div class="form-group">
-          <label for="oil-emission-type">기름 배출량 유형</label>
-          <input type="text" id="oil-emission-type" class="form-input" placeholder="소량 배출 (1~5L/주)" required />
+          <label for="oil-emission-type">Oil Emission Type</label>
+          <input type="text" id="oil-emission-type" class="form-input" placeholder="e.g., Small emission (1–5L/week)" required />
         </div>
 
-        <!-- Submit -->
-        <button type="submit" class="submit-btn">수정 완료</button>
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">Save Changes</button>
       </form>
     </div>
 

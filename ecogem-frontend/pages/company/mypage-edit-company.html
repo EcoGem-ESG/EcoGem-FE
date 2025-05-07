@@ -1,55 +1,55 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=360, user-scalable=no" />
-  <title>정보 수정 - 업체용</title>
+  <title>Edit Information - Company</title>
   <link rel="stylesheet" href="../../css/company/mypage-edit-company.css" />
 </head>
 <body>
   <div class="mobile-frame">
 
-    <!-- 상단 고정 영역 -->
+    <!-- Top fixed area -->
     <div class="board-header">
-      <a href="mypage-company.html" class="back-btn"><</a>
-      <h2>정보 수정</h2>
+      <a href="mypage-company.html" class="back-btn">&lt;</a>
+      <h2>Edit Information</h2>
     </div>
 
-    <!-- 폼 컨테이너 -->
+    <!-- Form container -->
     <div class="form-container">
       <form id="edit-company-form">
         <!-- Company Name (readonly) -->
         <div class="form-group">
-          <label for="company-name">업체명</label>
-          <input type="text" id="company-name" class="form-input" value="업체명" readonly />
+          <label for="company-name">Company Name</label>
+          <input type="text" id="company-name" class="form-input" value="Company Name" readonly />
         </div>
 
         <!-- Address -->
         <div class="form-group">
-          <label for="company-address">위치 (주소)</label>
-          <input type="text" id="company-address" class="form-input" placeholder="주소를 입력하세요" required />
+          <label for="company-address">Location (Address)</label>
+          <input type="text" id="company-address" class="form-input" placeholder="Enter address" required />
         </div>
 
         <!-- Contact Person -->
         <div class="form-group">
-          <label for="contact-name">담당자 이름 </label>
-          <input type="text" id="contact-name" class="form-input" placeholder="담당자명을 입력하세요" required />
+          <label for="contact-name">Contact Person</label>
+          <input type="text" id="contact-name" class="form-input" placeholder="Enter contact name" required />
         </div>
 
         <!-- Waste Types -->
         <div class="form-group">
-          <label for="waste-types">정제 가능 폐기물 종류</label>
-          <input type="text" id="waste-types" class="form-input" placeholder="식용유 폐기물, 동물성 지방 폐기물" required />
+          <label for="waste-types">Processable Waste Types</label>
+          <input type="text" id="waste-types" class="form-input" placeholder="e.g., cooking oil waste, animal fat waste" required />
         </div>
 
-        <!-- Phone -->
+        <!-- Phone Number -->
         <div class="form-group">
-          <label for="phone-number">전화번호 </label>
+          <label for="phone-number">Phone Number</label>
           <input type="tel" id="phone-number" class="form-input" placeholder="02-1234-5678" required />
         </div>
 
-        <!-- Submit -->
-        <button type="submit" class="submit-btn">수정 완료</button>
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">Save Changes</button>
       </form>
     </div>
 

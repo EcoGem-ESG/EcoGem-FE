@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=360, user-scalable=no" />
-  <title>업체 등록</title>
+  <title>Register Company</title>
   <link rel="stylesheet" href="../../css/company/register-company.css" />
 </head>
 <body>
@@ -12,38 +12,38 @@
       <div class="register-container">
         <div class="header">
           <img src="../../assets/EcoGem_titleLogo.png" class="logo" />
-          <h2>업체 등록</h2>
+          <h2>Register Company</h2>
         </div>
 
         <form>
-          <label>업체명 <span class="required">*</span></label>
-          <input type="text" placeholder="업체명" />
+          <label>Company Name <span class="required">*</span></label>
+          <input type="text" placeholder="Enter company name" />
 
-          <label>위치(주소) <span class="required">*</span></label>
+          <label>Location (Address) <span class="required">*</span></label>
           <div class="row">
-            <input type="text" placeholder="주소" />
-            <button type="button" class="search-btn">검색</button>
+            <input type="text" placeholder="Enter address" />
+            <button type="button" class="search-btn">Search</button>
           </div>
 
-          <label>담당자 이름 <span class="required">*</span></label>
-          <input type="text" placeholder="담당자 이름" />
+          <label>Contact Person <span class="required">*</span></label>
+          <input type="text" placeholder="Enter contact name" />
 
-          <label>업체 전화번호 <span class="required">*</span></label>
-          <input type="text" placeholder="전화번호" />
+          <label>Company Phone Number <span class="required">*</span></label>
+          <input type="tel" placeholder="Enter phone number" />
 
           <label class="waste-label">
-            정제 가능 폐기물 종류 <span class="required">*</span>
-            <span class="hint">(중복 선택 가능)</span>
+            Processable Waste Types <span class="required">*</span><br>
+            <span class="hint">(Multiple selection allowed)</span>
           </label>
           <div class="waste-buttons">
-            <button type="button">식용유 폐기물</button>
-            <button type="button">동물성 지방 폐기물</button>
-            <button type="button">식물성 부산물</button>
-            <button type="button">기타 산업용 윤활유</button>
-            <button type="button">혼합 폐기물</button>
+            <button type="button">Cooking Oil Waste</button>
+            <button type="button">Animal Fat Waste</button>
+            <button type="button">Vegetable Byproducts</button>
+            <button type="button">Industrial Lubricant Waste</button>
+            <button type="button">Mixed Waste</button>
           </div>
 
-          <button type="submit" class="submit-btn">업체 등록하기</button>
+          <button type="submit" class="submit-btn">Register Company</button>
         </form>
       </div>
     </div>

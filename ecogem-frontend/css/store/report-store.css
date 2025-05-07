@@ -44,10 +44,11 @@ h2 {
 }
 
 .date-range-select input {
-    padding: 6px;
+    padding: 5px 10px;
     border-radius: 10px;
     border: 1px solid #ccc;
     margin: 0 5px;
+    width: 27%;
 }
 
 .generate-report-btn {
@@ -67,7 +68,6 @@ h2 {
     background-color: #78a77d;
 }
 
-/* 보고서 상태 박스 */
 .status-box {
     background-color: white;
     width: 50%;

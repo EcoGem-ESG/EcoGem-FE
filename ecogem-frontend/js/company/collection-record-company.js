@@ -11,16 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const priceInput = document.getElementById("edit-price");
     const totalInput = document.getElementById("edit-total");
 
-    // ▶ 테스트용 하드코딩 (인증 연동 후 제거)
+    // ▶ Hardcoded for testing (remove after auth integration)
     const userId = 1;
     const userRole = "COMPANY_WORKER";
 
-    // 1) 날짜 변경 또는 초기 로드 시
+    // 1) Fetch records on date change or initial load
     startInput.addEventListener("change", fetchRecords);
     endInput.addEventListener("change", fetchRecords);
     fetchRecords();
 
-    // —— 백엔드에서 데이터 가져오기
+    // —— Fetch data from backend
     async function fetchRecords() {
         let url = `${baseURL}/api/collection-records?user_id=${userId}&role=${userRole}`;
         if (startInput.value && endInput.value) {
@@ -31,33 +31,32 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("▶ GET", url);
             const res = await fetch(url, { headers: { "Content-Type": "application/json" } });
             const body = await res.json();
-            console.log("👈 응답", body.records);
+            console.log("👈 Response", body.records);
             renderRecords(body.records);
         } catch (err) {
             console.error(err);
-            alert("데이터를 불러오는 중 오류가 발생했습니다.");
+            alert("An error occurred while loading data.");
         }
     }
 
-    // —— 같은 날짜끼리 그룹핑하여 렌더링
+    // —— Group by date and render
     function renderRecords(records) {
-        // 1) 기존 렌더링된 date-record 블록 삭제
+        // 1) Remove existing date-record blocks
         postList.querySelectorAll(".date-record").forEach(el => el.remove());
 
-        // 2) 날짜별 그룹핑
+        // 2) Group by date
         const grouped = records.reduce((acc, r) => {
-            // r.collected_at 은 "YYYY-MM-DD" 형태 가정
-            const key = r.collected_at;
+            const key = r.collected_at; // expected format YYYY-MM-DD
             if (!acc[key]) acc[key] = [];
             acc[key].push(r);
             return acc;
         }, {});
 
-        // 3) 날짜 내림차순 정렬하여 각 그룹 렌더링
+        // 3) Sort dates descending and render each group
         Object.keys(grouped)
             .sort((a, b) => b.localeCompare(a))
             .forEach(dateKey => {
-                // date-record 컨테이너 생성
+                // Create date-record container
                 const wrapper = document.createElement("div");
                 wrapper.className = "date-record";
                 wrapper.innerHTML = `
@@ -65,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="divider"></div>
           `;
 
-                // 해당 날짜의 각 record-item 추가
+                // Append record items for that date
                 grouped[dateKey].forEach(r => {
                     const item = document.createElement("div");
                     item.className = "record-item";
@@ -77,37 +76,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="store-name">${r.store_name}</div>
                 <button class="menu-btn">⋮</button>
                 <div class="menu-options">
-                  <button class="edit-btn">수정</button>
-                  <button class="delete-btn">삭제</button>
+                  <button class="edit-btn">Edit</button>
+                  <button class="delete-btn">Delete</button>
                 </div>
               </div>
               <div class="collected-by-and-name">
-                <div class="collected-by">수거인: </div>
+                <div class="collected-by">Collected by: </div>
                 <div class="collected-by-name">${r.collected_by}</div>
               </div>
               <div class="post-details">
-                <div class="quantity">${r.volume_liter}L 수거</div>
-                <div class="price">${r.price_per_liter.toLocaleString()}원/L</div>
-                <div class="total">총 ${r.total_price.toLocaleString()}원</div>
+                <div class="quantity">${r.volume_liter} <small>L<br>collected</small></div>
+                <div class="price">${r.price_per_liter.toLocaleString()} <br><small>KRW/L</small></div>
+                <div class="total"><small>Total</small> <br> ${r.total_price.toLocaleString()} <small>KRW/L</small></div>
               </div>
             `;
 
                     wrapper.appendChild(item);
                 });
 
-                // + 기록하기 버튼 위에 삽입
+                // Insert before the Add Record button
                 postList.insertBefore(wrapper, addRecordBtn);
             });
 
-        // 4) 이벤트 바인딩
+        // 4) Bind menu events
         bindMenuEvents();
     }
 
-
-
-    // —— 메뉴 토글, 수정, 삭제 이벤트
+    // —— Menu toggle, edit, delete events
     function bindMenuEvents() {
-        // 메뉴(⋮) 클릭
+        // Toggle options menu
         document.querySelectorAll(".menu-btn").forEach(btn => {
             btn.addEventListener("click", e => {
                 e.stopPropagation();
@@ -116,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // 수정 버튼
+        // Edit button
         document.querySelectorAll(".edit-btn").forEach(btn => {
             btn.addEventListener("click", e => {
                 e.stopPropagation();
@@ -124,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // 삭제 버튼
+        // Delete button
         document.querySelectorAll(".delete-btn").forEach(btn => {
             btn.addEventListener("click", e => {
                 e.stopPropagation();
@@ -132,13 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // 바깥 클릭 시 메뉴 닫기
+        // Close menus on outside click
         document.addEventListener("click", () => {
             document.querySelectorAll(".menu-options").forEach(o => o.style.display = "none");
         });
     }
 
-    // ▶ 수거량 또는 단가가 바뀌면 총금액 자동 계산
+    // ▶ Auto-calculate total when quantity or price changes
     function updateTotal() {
         const qty = parseFloat(qtyInput.value) || 0;
         const price = parseFloat(priceInput.value) || 0;
@@ -147,19 +144,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     qtyInput.addEventListener("input", updateTotal);
     priceInput.addEventListener("input", updateTotal);
-    // —— 팝업 열기
-    // 팝업 열기 함수
+
+    // —— Open edit popup
     function openEditPopup(item) {
         const id = item.dataset.id;
-        const date = item.closest(".date-record").querySelector(".date")
-            .textContent.replace(/\./g, "-");
+        const date = item.closest(".date-record").querySelector(".date").textContent.replace(/\./g, "-");
         const store = item.querySelector(".store-name").textContent;
         const name = item.querySelector(".collected-by-name").textContent;
         const qty = item.querySelector(".quantity").textContent.split("L")[0];
-        const price = item.querySelector(".price")
-            .textContent.replace(/[^0-9]/g, "");
-        const total = item.querySelector(".total")
-            .textContent.replace(/[^0-9]/g, "");
+        const price = item.querySelector(".price").textContent.replace(/[^0-9]/g, "");
+        const total = item.querySelector(".total").textContent.replace(/[^0-9]/g, "");
 
         editForm.dataset.id = id;
         editForm["edit-date"].value = date;
@@ -169,17 +163,15 @@ document.addEventListener("DOMContentLoaded", () => {
         editForm["edit-price"].value = price;
         editForm["edit-total"].value = total;
 
-
         popup.style.display = "flex";
     }
 
-
-    // —— 팝업 닫기
+    // —— Close popup
     closeBtn.addEventListener("click", () => {
         popup.style.display = "none";
     });
 
-    // —— 수정 API
+    // —— Update API
     editForm.addEventListener("submit", async e => {
         e.preventDefault();
         const id = editForm.dataset.id;
@@ -205,13 +197,13 @@ document.addEventListener("DOMContentLoaded", () => {
             fetchRecords();
         } catch (err) {
             console.error(err);
-            alert("수정 중 오류가 발생했습니다.");
+            alert("An error occurred while updating the record.");
         }
     });
 
-    // —— 삭제 API
+    // —— Delete API
     async function deleteRecord(id) {
-        if (!confirm("정말 삭제하시겠습니까?")) return;
+        if (!confirm("Are you sure you want to delete this record?")) return;
         try {
             await fetch(
                 `${baseURL}/api/collection-records/${id}` +
@@ -221,11 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
             fetchRecords();
         } catch (err) {
             console.error(err);
-            alert("삭제 중 오류가 발생했습니다.");
+            alert("An error occurred while deleting the record.");
         }
     }
 
-    // —— 기록하기 페이지로 이동
+    // —— Navigate to create page
     addRecordBtn.addEventListener("click", () => {
         window.location.href = "collection-record-create.html";
     });

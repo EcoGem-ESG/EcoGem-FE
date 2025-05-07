@@ -75,7 +75,6 @@ body {
   white-space: nowrap;
 }
 
-/* 판매중일 때만 초록 배경 */
 .badge--active {
   background-color: #759e68;
   color: white;
@@ -174,7 +173,6 @@ hr {
   background-color: #eee;
 }
 
-
 .comment-input input {
   flex: 1;
   padding: 10px;
@@ -195,16 +193,13 @@ hr {
   height: 30px;
 }
 
-/* comment-input 전체를 flex row로 */
 .comment-input {
   display: flex;
   align-items: center;
   gap: 8px;
-  /* 요소 간 간격 */
   padding: 10px;
 }
 
-/* 배지는 한 줄로 */
 .mention-badge {
   display: inline-flex;
   align-items: center;
@@ -213,10 +208,8 @@ hr {
   border-radius: 12px;
   padding: 0px 3px;
   white-space: nowrap;
-  /* 이 줄이 중요! */
 }
 
-/* X 버튼 크기 조정 */
 .mention-badge .remove-mention {
   margin-left: 5px;
   margin-bottom: 18px;
@@ -226,20 +219,17 @@ hr {
   cursor: pointer;
 }
 
-/* input이 가능한 만큼 넓게 */
 .comment-input input {
   flex: 1;
   min-width: 0;
-  /* flex children 일 때 중요 */
 }
 
-/* 등록 버튼 */
 .comment-input .submit-btn {
   flex-shrink: 0;
 }
 
 
-/* 모달창 css*/
+/* modal css*/
 .modal-overlay {
   position: fixed;
   top: 0;

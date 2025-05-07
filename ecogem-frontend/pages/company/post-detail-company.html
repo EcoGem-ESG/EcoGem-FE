@@ -1,51 +1,52 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=360, user-scalable=no" />
-  <title>게시글 상세 - 업체용</title>
+  <title>Post Detail - Company</title>
   <link rel="stylesheet" href="../../css/company/post-detail-company.css" />
 </head>
 
 <body>
   <div class="mobile-frame">
 
-    <!-- 상단 바 -->
+    <!-- Top bar -->
     <div class="top-bar">
       <a href="board-company.html" class="back-btn">&lt;</a>
       <div class="spacer"></div>
     </div>
 
-    <!-- 스크롤 영역 -->
+    <!-- Scroll area -->
     <div class="scroll-area">
-      <!-- 여기에 JS가 .post-detail 을 생성해서 넣어줍니다 -->
+      <!-- JS will generate and insert the .post-detail element here -->
       <div id="post-detail-container"></div>
 
       <hr />
 
-      <!-- 댓글도 JS가 .comments-section 을 생성해서 넣어줍니다 -->
+      <!-- JS will generate and insert the .comments-section element here -->
       <div id="comments-container"></div>
     </div>
 
+    <!-- Comment input -->
     <div class="comment-input">
-      <input type="text" placeholder="댓글을 입력해주세요." />
-      <button class="submit-btn">등록</button>
+      <input type="text" placeholder="Enter a comment..." />
+      <button class="submit-btn">Post</button>
     </div>
   </div>
 
-   <!-- 댓글 수정 모달창 -->
-   <div id="comment-edit-modal" class="modal-overlay" style="display:none;">
+  <!-- Edit comment modal -->
+  <div id="comment-edit-modal" class="modal-overlay" style="display:none;">
     <div class="modal">
-      <h3>댓글 수정</h3>
+      <h3>Edit Comment</h3>
       <textarea id="comment-edit-textarea" rows="3"></textarea>
       <div class="modal-actions">
-        <button id="comment-edit-cancel">취소</button>
-        <button id="comment-edit-save">저장</button>
+        <button id="comment-edit-cancel">Cancel</button>
+        <button id="comment-edit-save">Save</button>
       </div>
     </div>
   </div>
-  
+
   <script src="../../js/company/post-detail-company.js"></script>
 </body>
 

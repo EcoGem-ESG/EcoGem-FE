@@ -1,43 +1,46 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=360, user-scalable=no" />
-  <title>가게 추가 - 업체용</title>
+  <title>Add Store - Company</title>
   <link rel="stylesheet" href="../../css/company/store-add.css" />
 </head>
+
 <body>
   <div class="mobile-frame">
 
-    <!-- 상단 고정 영역 -->
+    <!-- Top fixed area -->
     <div class="board-header">
       <a href="store-list.html" class="back-arrow">&lt;</a>
-      <h2>가게 추가</h2>
+      <h2>Add Store</h2>
     </div>
 
-    <!-- 가게 추가 폼 -->
+    <!-- Add Store Form -->
     <div class="form-container">
       <div class="form-group">
-        <label for="store-name">가게 이름 <span class="required">*</span></label>
-        <input type="text" id="store-name" class="form-input" placeholder="가게 이름" required />
+        <label for="store-name">Store Name <span class="required">*</span></label>
+        <input type="text" id="store-name" class="form-input" placeholder="Enter store name" required />
       </div>
       <div class="form-group">
-        <label for="store-location">위치</label>
-        <input type="text" id="store-location" class="form-input" placeholder="위치" />
+        <label for="store-location">Location (Address)</label>
+        <input type="text" id="store-location" class="form-input" placeholder="Enter location" />
       </div>
       <div class="form-group">
-        <label for="store-phone">가게 전화번호</label>
+        <label for="store-phone">Store Phone Number</label>
         <input type="tel" id="store-phone" class="form-input" placeholder="000-0000-0000" />
       </div>
       <div class="form-group">
-        <label for="store-owner-phone">대표자 전화번호</label>
+        <label for="store-owner-phone">Owner Phone Number</label>
         <input type="tel" id="store-owner-phone" class="form-input" placeholder="000-0000-0000" />
       </div>
-      <button class="submit-btn">계약 중인 가게 추가하기</button>
+      <button class="submit-btn">Add Store</button>
     </div>
 
   </div>
 
   <script src="../../js/company/store-add.js"></script>
 </body>
+
 </html>

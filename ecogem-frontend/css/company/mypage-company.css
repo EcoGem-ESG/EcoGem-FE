@@ -46,7 +46,6 @@ h2 {
     width: 80%;
 }
 
-/* Profile Section */
 .profile {
     display: flex;
     align-items: center;
@@ -91,7 +90,6 @@ h2 {
     margin-top: 30px;
 }
 
-/* logout/withdrawal 버튼 컨테이너 */
 .logout-container {
     display: flex;
     flex-direction: column;
@@ -116,7 +114,6 @@ h2 {
     background-color: #c0c0c0;
 }
 
-/* 하단 고정 메뉴바 */
 .bottom-nav {
     position: fixed;
     bottom: 0;
