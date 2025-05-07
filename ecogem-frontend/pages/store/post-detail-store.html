@@ -26,12 +26,12 @@
 
     <!-- 스크롤 영역 -->
     <div class="scroll-area">
-      <!-- 여기에 JS가 .post-detail 을 생성해서 넣어줍니다 -->
+      <!-- 여기에 JS가 .post-detail 을 생성해서 넣어줌줌 -->
       <div id="post-detail-container"></div>
 
       <hr />
 
-      <!-- 댓글도 JS가 .comments-section 을 생성해서 넣어줍니다 -->
+      <!-- 댓글도 JS가 .comments-section 을 생성해서 넣어줌 -->
       <div id="comments-container"></div>
     </div>
 
@@ -40,14 +40,26 @@
       <button class="submit-btn">등록</button>
     </div>
 
+    <!-- 게시글 수정 모달 -->
+    <div id="post-edit-modal" class="modal-overlay" style="display:none;">
+      <div class="modal">
+        <h3>게시글 수정</h3>
+      <textarea id="post-edit-textarea"></textarea>
+      <div class="modal-actions">
+      <button id="post-edit-cancel">취소</button>
+      <button id="post-edit-save">저장</button>
+    </div>
+    </div>
+    </div>
+
     <!-- 댓글 수정 모달창 -->
-    <div id="edit-modal" class="modal-overlay" style="display:none;">
+    <div id="comment-edit-modal" class="modal-overlay" style="display:none;">
       <div class="modal">
         <h3>댓글 수정</h3>
-        <textarea id="edit-textarea" rows="3"></textarea>
+        <textarea id="comment-edit-textarea" rows="3"></textarea>
         <div class="modal-actions">
-          <button id="edit-cancel">취소</button>
-          <button id="edit-save">저장</button>
+          <button id="comment-edit-cancel">취소</button>
+          <button id="comment-edit-save">저장</button>
         </div>
       </div>
     </div>
