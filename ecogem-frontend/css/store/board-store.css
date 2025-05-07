@@ -17,11 +17,11 @@ body {
     flex: 1;
     overflow-y: auto;
     padding-top: 10px;
-    padding-bottom: 45px /* 메뉴바 높이만큼 공간 확보 */
+    padding-bottom: 45px
 }
 
 .board-header {
-    position: sticky;   /* 스크롤해도 고정 */
+    position: sticky;
     top: 0;            
     padding: 20px;
     display: flex;
@@ -47,13 +47,14 @@ h2 {
     text-align: center;
     margin-bottom: 40px;
     padding: 8px;
+    padding-right: 12px;
     background-color: #759e68;
     color: white;
     font-size: 16px;
     border: none;
     border-radius: 15px;
     cursor: pointer;
-    width: 38%;
+    width: 30%;
     margin-left: 30px;
     text-decoration: none;
 }
@@ -86,10 +87,10 @@ h2 {
     font-size: 14px;
     color: #333;
     text-align: left;
-    white-space: nowrap; /* 한 줄로 제한 */
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    cursor: pointer; /* 클릭 가능한 표시 */
+    cursor: pointer;
     padding-right: 20px;
 }
 
@@ -105,7 +106,6 @@ h2 {
     display: inline-block;
 }
 
-/* 판매중일 때만 초록 배경 */
 .badge--active {
     background-color: #759e68;
     color:white;
@@ -123,7 +123,6 @@ h2 {
     display: flex;
     justify-content: space-around;
     align-items: stretch;
-    /* 아이템이 전체 높이 채우도록 */
     font-size: 12px;
     z-index: 99;
 }
@@ -138,7 +137,6 @@ h2 {
     text-decoration: none;
 }
 
-/* 메뉴 사이에 세로 구분선 */
 .nav-item:not(:last-child)::after {
     content: "";
     position: absolute;

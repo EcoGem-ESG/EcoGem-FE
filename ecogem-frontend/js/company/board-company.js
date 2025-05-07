@@ -1,50 +1,48 @@
-// board-company.js
-
 document.addEventListener("DOMContentLoaded", () => {
     const baseURL = "http://localhost:8080";
 
-    // ▶ 테스트용 하드코딩 (인증 연동 전 제거)
+    // ▶ Hardcoded for testing (remove before auth integration)
     const userId = 1;
     const userRole = "COMPANY_WORKER";
-    const companyLat = 37.5000;   // 테스트용 위도
-    const companyLng = 127.0000;  // 테스트용 경도
+    const companyLat = 37.5000;   // Test latitude
+    const companyLng = 127.0000;  // Test longitude
 
     const rangeSelect = document.querySelector(".range-select");
     const dropdown = document.querySelector(".dropdown");
     const postList = document.querySelector(".post-list");
 
-    let currentRadius = null;   // null = 전체
+    let currentRadius = null;   // null = all
 
-    // 0) 드롭다운 숨기기 & '전체' 옵션 추가
+    // 0) Hide dropdown & add 'All' option
     dropdown.style.display = "none";
     const resetLi = document.createElement("li");
-    resetLi.textContent = "전체";
+    resetLi.textContent = "All";
     dropdown.prepend(resetLi);
     const radiusItems = dropdown.querySelectorAll("li");
 
-    // 1) 드롭다운 토글
+    // 1) Toggle dropdown
     rangeSelect.addEventListener("click", e => {
         dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         e.stopPropagation();
     });
     document.addEventListener("click", () => dropdown.style.display = "none");
 
-    // 2) 반경 / 전체 선택
+    // 2) Select radius or 'All'
     radiusItems.forEach(li => {
         li.addEventListener("click", () => {
-            if (li.textContent === "전체") {
+            if (li.textContent === "All") {
                 currentRadius = null;
-                rangeSelect.firstChild.textContent = "업체 주변 범위 설정 ⌄";
+                rangeSelect.firstChild.textContent = "Select Radius ⌄";
             } else {
                 currentRadius = parseInt(li.textContent, 10);
-                rangeSelect.firstChild.textContent = `${currentRadius}km 반경 ⌄`;
+                rangeSelect.firstChild.textContent = `${currentRadius} km ⌄`;
             }
             dropdown.style.display = "none";
             fetchPosts();
         });
     });
 
-    // 3) 게시글 조회
+    // 3) Fetch posts
     async function fetchPosts() {
         let url = `${baseURL}/api/posts`
             + `?lat=${companyLat}&lng=${companyLng}`
@@ -59,37 +57,36 @@ document.addEventListener("DOMContentLoaded", () => {
             const body = await res.json();
             renderPosts(body.data || []);
         } catch (err) {
-            console.error("게시글 로드 실패:", err);
-            alert("게시글을 불러오는 중 오류가 발생했습니다.");
+            console.error("Failed to load posts:", err);
+            alert("An error occurred while loading posts.");
         }
     }
 
-    // 4) 렌더링
+    // 4) Render posts
     function renderPosts(posts) {
-        // 이전 카드 삭제
+        // Remove existing cards
         postList.querySelectorAll(".post-card").forEach(el => el.remove());
 
         posts.forEach(p => {
             const card = document.createElement("div");
             card.className = "post-card";
 
-            // 상태 badge 텍스트 매핑
+            // Map status to badge text & class
             let badgeText, badgeClass = "badge";
             switch (p.status) {
                 case "ACTIVE":
-                    badgeText = "판매 중";
+                    badgeText = "Selling";
                     badgeClass += " badge--active";
                     break;
                 case "RESERVED":
-                    badgeText = "예약 중";
+                    badgeText = "Reserved";
                     break;
                 case "COMPLETED":
-                    badgeText = "거래 완료";
+                    badgeText = "Completed";
                     break;
                 default:
                     badgeText = p.status;
             }
-
 
             card.innerHTML = `
           <div class="store-name">${p.store_name}</div>
@@ -97,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <span class="${badgeClass}">${badgeText}</span>
         `;
 
-            // 상세 페이지로 이동
+            // Navigate to detail page
             card.addEventListener("click", () => {
                 location.href = `post-detail-company.html?postId=${p.post_id}`;
             });
@@ -106,6 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 초기 로드
+    // Initial load
     fetchPosts();
 });

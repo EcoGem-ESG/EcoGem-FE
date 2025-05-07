@@ -1,66 +1,79 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=360, user-scalable=no" />
-    <title>수거 기록 등록 - 업체용</title>
+    <title>Add Collection Record - Company</title>
     <link rel="stylesheet" href="../../css/company/collection-record-create.css" />
+    <!-- Flatpickr styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 </head>
+
 <body>
     <div class="mobile-frame">
 
-        <!-- 상단 고정 영역 -->
+        <!-- Top fixed area -->
         <div class="board-header">
-            <a href="collection-record-company.html" class="back-btn"><</a>
-            <h2>수거 기록 등록</h2>
+            <a href="collection-record-company.html" class="back-btn">&lt;</a>
+            <h2>Add Collection Record</h2>
         </div>
 
-        <!-- 수거 기록 입력 폼 -->
+        <!-- Collection record input form -->
         <div class="form-container">
             <div class="form-group">
-                <label for="collection-date">수거일 <span class="required">*</span></label>
-                <input type="date" id="collection-date" class="form-input" required />
+                <label for="collection-date">Date <span class="required">*</span></label>
+                <input type="date" id="collection-date" class="form-input" placeholder="YYYY-MM-DD" required />
             </div>
 
             <div class="form-group">
-                <label for="store-name">계약한 가게 이름 <span class="required">*</span></label>
-                <input type="text" id="store-name" class="form-input" placeholder="가게 이름" required />
+                <label for="store-name">Store Name <span class="required">*</span></label>
+                <input type="text" id="store-name" class="form-input" placeholder="Enter store name" required />
             </div>
 
             <div class="form-group">
-                <label for="collected-by">수거인 <span class="required">*</span></label>
-                <input type="text" id="collected-by" class="form-input" placeholder="수거인 이름" required />
+                <label for="collected-by">Collected By <span class="required">*</span></label>
+                <input type="text" id="collected-by" class="form-input" placeholder="Enter collector name" required />
             </div>
 
             <div class="form-group">
-                <label for="quantity">수거량 (L) <span class="required">*</span></label>
+                <label for="quantity">Quantity (L) <span class="required">*</span></label>
                 <div class="input-container">
-                    <input type="number" id="quantity" class="form-input" placeholder="수거량" required />
+                    <input type="number" id="quantity" class="form-input" placeholder="Enter quantity" required />
                     <span>L</span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="unit-price">리터당 단가 <span class="required">*</span></label>
+                <label for="unit-price">Unit Price (KRW) <span class="required">*</span></label>
                 <div class="input-container">
-                    <input type="number" id="unit-price" class="form-input" placeholder="단가 (원)" required />
-                    <span>원</span>
+                    <input type="number" id="unit-price" class="form-input" placeholder="Enter price per liter"
+                        required />
+                    <span>KRW</span>
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="total-price">총 금액 <span class="required">*</span></label>
+                <label for="total-price">Total Amount (KRW) <span class="required">*</span></label>
                 <div class="input-container">
-                    <input type="number" id="total-price" class="form-input" placeholder="총 금액 (원)" required />
-                    <span>원</span>
+                    <input type="number" id="total-price" class="form-input" placeholder="Enter total amount"
+                        required />
+                    <span>KRW</span>
                 </div>
             </div>
 
-            <button class="submit-btn">수거 기록 등록하기</button>
+            <button class="submit-btn">Submit Record</button>
         </div>
 
     </div>
 
+    <!-- Flatpickr script -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        flatpickr("#collection-date", { dateFormat: "Y-m-d" });
+    </script>
+
     <script src="../../js/company/collection-record-create.js"></script>
 </body>
+
 </html>

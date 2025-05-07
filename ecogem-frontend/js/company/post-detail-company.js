@@ -1,37 +1,37 @@
 document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:8080";
 
-  // ▶ 테스트용 하드코딩 (인증 연동 전 제거)
+  // ▶ Hardcoded for testing (remove after auth integration)
   const userId   = 1;
   const userRole = "COMPANY_WORKER";
 
-  // 1) URL에서 postId 파싱
+  // 1) Parse postId from URL
   const params = new URLSearchParams(window.location.search);
   const postId = params.get("postId");
   if (!postId) {
-    alert("postId가 없습니다.");
+    alert("postId is missing.");
     return;
   }
 
-  // — DOM 레퍼런스 —
+  // — DOM references —
   const postContainer       = document.getElementById("post-detail-container");
   const commentsContainer   = document.getElementById("comments-container");
   const commentInputWrap    = document.querySelector(".comment-input");
   const commentInputEl      = commentInputWrap.querySelector("input");
   const commentBtnEl        = commentInputWrap.querySelector(".submit-btn");
-  const defaultPlaceholder  = "댓글을 입력해주세요.";
+  const defaultPlaceholder  = "Enter a comment...";
 
-  // 댓글 수정 모달
-  const commentEditModal    = document.getElementById("comment-edit-modal");
-  const commentEditTextarea = document.getElementById("comment-edit-textarea");
-  const commentEditCancelBtn= document.getElementById("comment-edit-cancel");
-  const commentEditSaveBtn  = document.getElementById("comment-edit-save");
+  // Comment edit modal
+  const commentEditModal     = document.getElementById("comment-edit-modal");
+  const commentEditTextarea  = document.getElementById("comment-edit-textarea");
+  const commentEditCancelBtn = document.getElementById("comment-edit-cancel");
+  const commentEditSaveBtn   = document.getElementById("comment-edit-save");
 
   // state
   let currentParentId  = null;
   let editingCommentId = null;
 
-  // — 댓글 수정 모달 바인딩 —
+  // — Bind comment edit modal —
   commentEditCancelBtn.addEventListener("click", () => {
     editingCommentId = null;
     commentEditModal.style.display = "none";
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
   commentEditSaveBtn.addEventListener("click", async () => {
     const newText = commentEditTextarea.value.trim();
     if (!newText) {
-      alert("내용을 입력해주세요.");
+      alert("Please enter content.");
       return;
     }
     try {
@@ -51,18 +51,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
       const body = await res.json();
-      if (!res.ok) throw new Error(body.message||res.statusText);
+      if (!res.ok) throw new Error(body.message || res.statusText);
 
       commentEditModal.style.display = "none";
       editingCommentId = null;
-      await fetchPostDetail();   // 다시 불러와서 화면 갱신
+      await fetchPostDetail();   // reload details
     } catch (err) {
-      console.error("댓글 수정 실패:", err);
-      alert("댓글 수정 중 오류가 발생했습니다.");
+      console.error("Comment update failed:", err);
+      alert("An error occurred while updating the comment.");
     }
   });
 
-  // 2) 상세 데이터 가져오기
+  // 2) Fetch post detail
   fetchPostDetail();
   async function fetchPostDetail() {
     try {
@@ -73,20 +73,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const { data } = await res.json();
       renderDetail(data);
     } catch (err) {
-      console.error("상세 로드 실패:", err);
-      alert("게시글 상세를 불러오는 중 오류가 발생했습니다.");
+      console.error("Failed to load post detail:", err);
+      alert("An error occurred while loading post details.");
     }
   }
 
-  // 3) 화면 렌더링
+  // 3) Render detail
   function renderDetail(data) {
-    // — 게시글 영역 —
+    // — Post section —
     let statusClass = "", statusText = "";
     switch (data.status) {
-      case "ACTIVE":    statusText = "판매 중"; statusClass = "badge--active"; break;
-      case "RESERVED":  statusText = "예약 중";                            break;
-      case "COMPLETED": statusText = "거래 완료";                          break;
-      default:          statusText = data.status;
+      case "ACTIVE":    statusText = "Selling";   statusClass = "badge--active"; break;
+      case "RESERVED":  statusText = "Reserved";                       break;
+      case "COMPLETED": statusText = "Completed";                      break;
+      default:           statusText = data.status;
     }
     postContainer.innerHTML = `
       <div class="post-header">
@@ -99,15 +99,15 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="post-content">${data.content.replace(/\n/g,"<br>")}</div>
     `;
 
-    // — 댓글 영역 —
-    commentsContainer.innerHTML = `<h3>댓글</h3>`;
+    // — Comments section —
+    commentsContainer.innerHTML = `<h3>Comments</h3>`;
     renderComments(data.comments, commentsContainer, 0);
 
     bindCommentMenus();
     bindReplyButtons();
   }
 
-  // 댓글·대댓글 재귀 렌더
+  // Recursive render for comments and replies
   function renderComments(comments, container, depth) {
     comments.forEach(c => {
       const isParent = depth === 0;
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const isDeleted = c.deleted;
       const menuHtml  = (isMine && !isDeleted)
         ? `<button class="menu-btn">⋮</button>
-           <ul class="menu-list"><li>수정</li><li>삭제</li></ul>`
+           <ul class="menu-list"><li>Edit</li><li>Delete</li></ul>`
         : "";
 
       div.innerHTML = `
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
         <div class="comment-text">${c.content}</div>
         <div class="timestamp">${c.created_at.replace("T"," ").slice(0,16)}</div>
-        ${isParent ? `<button class="reply-btn">답글 쓰기</button>` : ""}
+        ${isParent ? `<button class="reply-btn">Reply</button>` : ""}
       `;
       container.appendChild(div);
 
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 댓글 ⋮ 메뉴 및 수정/삭제 바인딩
+  // Bind comment ⋮ menu and edit/delete actions
   function bindCommentMenus() {
     const btns  = document.querySelectorAll(".comment .menu-btn");
     const lists = document.querySelectorAll(".comment .menu-list");
@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     lists.forEach(list => {
       const [editLi, deleteLi] = list.children;
-      // 수정
+      // Edit
       editLi.addEventListener("click", e => {
         e.stopPropagation();
         closeAll();
@@ -170,12 +170,12 @@ document.addEventListener("DOMContentLoaded", () => {
         commentEditModal.style.display = "flex";
         commentEditTextarea.focus();
       });
-      // 삭제
+      // Delete
       deleteLi.addEventListener("click", async e => {
         e.stopPropagation();
         closeAll();
         const commentId = list.closest(".comment").dataset.commentId;
-        if (!confirm("정말 삭제하시겠습니까?")) return;
+        if (!confirm("Are you sure you want to delete this comment?")) return;
         try {
           const res = await fetch(
             `${baseURL}/api/comments/${commentId}?user_id=${userId}`, {
@@ -185,17 +185,17 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!res.ok) throw new Error(res.statusText);
           await fetchPostDetail();
         } catch (err) {
-          console.error("댓글 삭제 실패:", err);
-          alert("댓글 삭제 중 오류가 발생했습니다.");
+          console.error("Comment delete failed:", err);
+          alert("An error occurred while deleting the comment.");
         }
       });
     });
 
-    // 밖 클릭 시 닫기
+    // Close menus on outside click
     document.addEventListener("click", () => lists.forEach(l => l.style.display = "none"));
   }
 
-  // 답글 쓰기 바인딩
+  // Bind reply buttons
   function bindReplyButtons() {
     document.querySelectorAll(".reply-btn").forEach(btn => {
       btn.addEventListener("click", e => {
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // @뱃지 표시
+  // Show @ mention badge
   function showMentionBadge(author) {
     const existing = commentInputWrap.querySelector(".mention-badge");
     if (existing) existing.remove();
@@ -235,11 +235,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // 댓글/답글 등록
+  // Submit comment or reply
   commentBtnEl.addEventListener("click", async () => {
     const content = commentInputEl.value.trim();
     if (!content) {
-      alert("내용을 입력해주세요.");
+      alert("Please enter content.");
       return;
     }
     const payload = {
@@ -262,8 +262,8 @@ document.addEventListener("DOMContentLoaded", () => {
       commentInputEl.placeholder = defaultPlaceholder;
       await fetchPostDetail();
     } catch (err) {
-      console.error("댓글 등록 실패:", err);
-      alert("댓글 등록 중 오류가 발생했습니다.");
+      console.error("Comment creation failed:", err);
+      alert("An error occurred while creating the comment.");
     }
   });
 

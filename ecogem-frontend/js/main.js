@@ -1,1 +1,0 @@
-console.log('EcoGem 시작!');

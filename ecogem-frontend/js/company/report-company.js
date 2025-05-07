@@ -5,34 +5,34 @@ document.addEventListener("DOMContentLoaded", function() {
     const statusMessage = document.getElementById("status-message");
     const downloadBtn = document.getElementById("download-report");
 
-    // 'ESG 보고서 AI 자동 생성하기' 버튼 클릭 시
+    // When 'Generate ESG Report with AI' button is clicked
     generateReportBtn.addEventListener("click", function() {
-        // 상태를 'PENDING'으로 설정
+        // Set status to 'PENDING'
         updateStatus("PENDING");
         
-        // 예시로 3초 뒤에 상태를 'COMPLETED'로 변경
+        // Example: change status to 'COMPLETED' after 3 seconds
         setTimeout(() => {
-            // 상태를 'COMPLETED'로 설정
+            // Set status to 'COMPLETED'
             updateStatus("COMPLETED", "/path/to/report.docx");
         }, 3000);
 
-        // 예시로 'FAILED' 상태를 설정 (주석 처리된 부분은 필요 시 사용)
+        // Example: set status to 'FAILED' if needed (uncomment to use)
         // setTimeout(() => {
         //     updateStatus("FAILED");
         // }, 3000);
     });
 
-    // 상태에 따른 메시지 업데이트
+    // Update message based on status
     function updateStatus(status, filePath = "") {
         if (status === "PENDING") {
-            statusMessage.textContent = "보고서 생성 중입니다...";
+            statusMessage.textContent = "Report is being generated...";
             downloadBtn.style.display = "none";
         } else if (status === "COMPLETED") {
-            statusMessage.textContent = "보고서 생성 완료!";
+            statusMessage.textContent = "Report generation completed!";
             downloadBtn.style.display = "block";
             downloadBtn.setAttribute("href", filePath);
         } else if (status === "FAILED") {
-            statusMessage.textContent = "보고서 생성에 실패했습니다.";
+            statusMessage.textContent = "Failed to generate report.";
             downloadBtn.style.display = "none";
         }
     }
