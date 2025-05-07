@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ▶ 테스트용 하드코딩 (인증 연동 전 제거)
   const userId = 2;
   const userRole = "STORE_OWNER";
+  const myStoreId = 1;   // ← 이 값은 나중에 API로 대체
 
   // 1) URL에서 postId 파싱
   const params = new URLSearchParams(window.location.search);
@@ -22,50 +23,156 @@ document.addEventListener("DOMContentLoaded", () => {
   const commentInputEl = commentInputWrap.querySelector("input");
   const commentBtnEl = commentInputWrap.querySelector(".submit-btn");
   const defaultPlaceholder = "댓글을 입력해주세요.";
+
   // 모달용 전역 변수
-  const editModal = document.getElementById("edit-modal");
-  const editTextarea = document.getElementById("edit-textarea");
-  const editCancelBtn = document.getElementById("edit-cancel");
-  const editSaveBtn = document.getElementById("edit-save");
+  // 게시글 수정용
+  const postEditModal = document.getElementById("post-edit-modal");
+  const postEditTextarea = document.getElementById("post-edit-textarea");
+  const postEditCancelBtn = document.getElementById("post-edit-cancel");
+  const postEditSaveBtn = document.getElementById("post-edit-save");
+  // 댓글용
+  const commentEditModal = document.getElementById("comment-edit-modal");
+  const commentEditTextarea = document.getElementById("comment-edit-textarea");
+  const commentEditCancelBtn = document.getElementById("comment-edit-cancel");
+  const commentEditSaveBtn = document.getElementById("comment-edit-save");
 
   // state: reply target
   let currentParentId = null;
-  let editingCommentId  = null;
+  let editingCommentId = null;
 
-   // bind modal buttons
-   editCancelBtn.addEventListener("click", () => {
-    editingCommentId = null;
-    editModal.style.display = "none";
+  postEditCancelBtn.addEventListener("click", () => {
+    postEditModal.style.display = "none";
+  });
+  
+  postEditSaveBtn.addEventListener("click", async () => {
+    const newContent = postEditTextarea.value.trim();
+    if (!newContent) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+    try {
+      const res = await fetch(
+        `${baseURL}/api/posts/${postId}`, {
+          method:  "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({
+            store_id: myStoreId,
+            content:  newContent
+          })
+        }
+      );
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || res.statusText);
+      postEditModal.style.display = "none";
+      fetchPostDetail();
+    } catch (err) {
+      console.error("게시글 수정 실패:", err);
+      alert("게시글 수정 중 오류가 발생했습니다:\n" + err.message);
+    }
   });
 
-  editSaveBtn.addEventListener("click", async () => {
-    const newText = editTextarea.value.trim();
+  // bind modal buttons
+  commentEditCancelBtn.addEventListener("click", () => {
+    editingCommentId = null;
+    commentEditModal.style.display = "none";
+  });
+
+  commentEditSaveBtn.addEventListener("click", async () => {
+    const newText = commentEditTextarea.value.trim();
     if (!newText) {
       alert("내용을 입력해주세요.");
       return;
     }
     try {
-      const res  = await fetch(
+      const res = await fetch(
         `${baseURL}/api/comments/${editingCommentId}`,
         {
-          method:  "PATCH",
+          method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify({ user_id: userId, content: newText })
+          body: JSON.stringify({ user_id: userId, content: newText })
         }
       );
       const body = await res.json();
       if (!res.ok) {
         console.error("PATCH /api/comments failed:", body);
-        alert("댓글 수정 중 오류가 발생했습니다:\n" + (body.message||""));
+        alert("댓글 수정 중 오류가 발생했습니다:\n" + (body.message || ""));
         return;
       }
-      editModal.style.display = "none";
+      commentEditModal.style.display = "none";
       editingCommentId = null;
       fetchPostDetail();
     } catch (err) {
       console.error("댓글 수정 실패:", err);
       alert("댓글 수정 중 오류가 발생했습니다.");
     }
+  });
+
+  // --- 상태 변경 함수 ---
+  async function changeStatus(newStatus) {
+    try {
+      const res = await fetch(
+        `${baseURL}/api/posts/${postId}/status`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            store_id: myStoreId,
+            status: newStatus
+          })
+        }
+      );
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || res.statusText);
+      await fetchPostDetail(); // 갱신
+    } catch (err) {
+      console.error("상태 변경 실패:", err);
+      alert("상태 변경 중 오류가 발생했습니다:\n" + err.message);
+    }
+  }
+
+  // — 상단바 메뉴: 토글 & 이벤트 위임 — 
+  topBarBtn.addEventListener("click", e => {
+    e.stopPropagation();
+    topBarList.style.display =
+      topBarList.style.display === "block" ? "none" : "block";
+  });
+  document.addEventListener("click", () => {
+    topBarList.style.display = "none";
+  });
+  topBarList.addEventListener("click", async e => {
+    e.stopPropagation();
+    const t = e.target;
+    if (t.matches(".change-active")) changeStatus("ACTIVE");
+    else if (t.matches(".change-reserved")) changeStatus("RESERVED");
+    else if (t.matches(".change-completed")) changeStatus("COMPLETED");
+  else if (t.matches(".edit-post")) {
+  // ▶ 게시글 수정 모달 열기
+  // 기존 내용을 textarea에 채워주고 포커스
+  const contentEl = postContainer.querySelector(".post-content");
+  const current   = contentEl.innerHTML.replace(/<br>/g, "\n");
+  postEditTextarea.value = current;
+  postEditModal.style.display = "flex";
+  postEditTextarea.focus();
+}
+else if (t.matches(".delete-post")) {
+  // ▶ 게시글 삭제
+  if (!confirm("정말 이 게시글을 삭제하시겠습니까?")) return;
+  try {
+    const res2 = await fetch(
+      `${baseURL}/api/posts/${postId}?storeId=${myStoreId}`, {
+        method: "DELETE"
+      }
+    );
+    const body2 = await res2.json();
+    if (!res2.ok) throw new Error(body2.message || res2.statusText);
+    // 삭제 성공 → 목록 페이지로 이동
+    location.href = "board-store.html";
+  } catch (err) {
+    console.error("게시글 삭제 실패:", err);
+    alert("게시글 삭제 중 오류가 발생했습니다:\n" + err.message);
+  }
+}
+    topBarList.style.display = "none";
   });
 
 
@@ -86,18 +193,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+
   // 3) 화면에 렌더링
   function renderDetail(data) {
     // — 상단 ⋮ 메뉴 노출 여부
-    const isMine = userRole === "STORE_OWNER" && data.store_id === userId;
+    const isMine = userRole === "STORE_OWNER"
+      && data.store_id === myStoreId;
     if (isMine) {
+      // 현재 상태가 아닌 것들만 메뉴에 추가
+      const items = [];
+      if (data.status !== "ACTIVE") {
+        items.push(`<li class="change-active">판매 중으로 변경</li>`);
+      }
+      if (data.status !== "RESERVED") {
+        items.push(`<li class="change-reserved">예약 중으로 변경</li>`);
+      }
+      if (data.status !== "COMPLETED") {
+        items.push(`<li class="change-completed">거래 완료로 변경</li>`);
+      }
+      // 언제나 수정/삭제는 노출
+      items.push(`<li class="edit-post">수정</li>`);
+      items.push(`<li class="delete-post">삭제</li>`);
+
+      topBarList.innerHTML = items.join("");
       topBarBtn.style.display = "block";
-      bindTopBarMenu();
+      //bindTopBarMenu();
     } else {
       topBarBtn.style.display = "none";
       topBarList.style.display = "none";
     }
-
     // — 게시글 영역 (innerHTML으로 덮어쓰기) —
     let statusClass = "", statusText = "";
     switch (data.status) {
@@ -163,15 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 상단 ⋮ 메뉴
-  function bindTopBarMenu() {
-    topBarBtn.addEventListener("click", e => {
-      e.stopPropagation();
-      topBarList.style.display = topBarList.style.display === "block" ? "none" : "block";
-    });
-    topBarList.addEventListener("click", e => e.stopPropagation());
-    document.addEventListener("click", () => topBarList.style.display = "none");
-  }
+
 
   // 댓글 ⋮ 메뉴 및 수정/삭제 바인딩
   function bindCommentMenus() {
@@ -191,9 +307,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // “수정” / “삭제” 항목 클릭
     lists.forEach(list => {
-      const editLi   = list.children[0];
+      const editLi = list.children[0];
       const deleteLi = list.children[1];
-   
+
       // 댓글 메뉴 바인딩 내부에서 수정 클릭할 때:
       editLi.addEventListener("click", e => {
         e.stopPropagation();
@@ -203,9 +319,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const commentDiv = list.closest(".comment");
         editingCommentId = commentDiv.dataset.commentId;
         const oldText = commentDiv.querySelector(".comment-text").textContent;
-        editTextarea.value = oldText;
-        editModal.style.display = "flex";
-        editTextarea.focus();
+        commentEditTextarea.value = oldText;
+        commentEditModal.style.display = "flex";
+        commentEditTextarea.focus();
       });
 
       // 삭제

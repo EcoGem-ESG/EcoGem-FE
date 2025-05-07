@@ -276,7 +276,14 @@ hr {
   margin-left: 8px;
 }
 
-#edit-save {
+#post-edit-save {
+  background-color: #759e68;
+  color: white;
+  border-color: #759e68;
+  border-radius: 3px;
+}
+
+#comment-edit-save {
   background-color: #759e68;
   color: white;
   border-color: #759e68;
