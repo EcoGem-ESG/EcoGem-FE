@@ -13,25 +13,65 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 컨테이너 & 입력 요소
-  const postContainer     = document.getElementById("post-detail-container");
-  const commentsContainer = document.getElementById("comments-container");
-  const commentInputWrap  = document.querySelector(".comment-input");
-  const commentInputEl    = commentInputWrap.querySelector("input");
-  const commentBtnEl      = commentInputWrap.querySelector(".submit-btn");
+  // — DOM 레퍼런스 —
+  const postContainer       = document.getElementById("post-detail-container");
+  const commentsContainer   = document.getElementById("comments-container");
+  const commentInputWrap    = document.querySelector(".comment-input");
+  const commentInputEl      = commentInputWrap.querySelector("input");
+  const commentBtnEl        = commentInputWrap.querySelector(".submit-btn");
+  const defaultPlaceholder  = "댓글을 입력해주세요.";
 
-  // 저장해 둘 초기 placeholder 텍스트
-  const defaultPlaceholder = "댓글을 입력해주세요.";
+  // 댓글 수정 모달
+  const commentEditModal    = document.getElementById("comment-edit-modal");
+  const commentEditTextarea = document.getElementById("comment-edit-textarea");
+  const commentEditCancelBtn= document.getElementById("comment-edit-cancel");
+  const commentEditSaveBtn  = document.getElementById("comment-edit-save");
 
-  // 2) API 호출
-  fetchPostDetail();
+  // state
+  let currentParentId  = null;
+  let editingCommentId = null;
 
-  async function fetchPostDetail() {
-    const url = `${baseURL}/api/posts/${postId}?user_id=${userId}&role=${userRole}`;
+  // — 댓글 수정 모달 바인딩 —
+  commentEditCancelBtn.addEventListener("click", () => {
+    editingCommentId = null;
+    commentEditModal.style.display = "none";
+  });
+  commentEditSaveBtn.addEventListener("click", async () => {
+    const newText = commentEditTextarea.value.trim();
+    if (!newText) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
     try {
-      const res  = await fetch(url);
+      const res  = await fetch(
+        `${baseURL}/api/comments/${editingCommentId}`, {
+          method:  "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ user_id: userId, content: newText })
+        }
+      );
       const body = await res.json();
-      renderDetail(body.data);
+      if (!res.ok) throw new Error(body.message||res.statusText);
+
+      commentEditModal.style.display = "none";
+      editingCommentId = null;
+      await fetchPostDetail();   // 다시 불러와서 화면 갱신
+    } catch (err) {
+      console.error("댓글 수정 실패:", err);
+      alert("댓글 수정 중 오류가 발생했습니다.");
+    }
+  });
+
+  // 2) 상세 데이터 가져오기
+  fetchPostDetail();
+  async function fetchPostDetail() {
+    try {
+      const res = await fetch(
+        `${baseURL}/api/posts/${postId}` +
+        `?user_id=${userId}&role=${userRole}`
+      );
+      const { data } = await res.json();
+      renderDetail(data);
     } catch (err) {
       console.error("상세 로드 실패:", err);
       alert("게시글 상세를 불러오는 중 오류가 발생했습니다.");
@@ -40,19 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 3) 화면 렌더링
   function renderDetail(data) {
-    // — 게시글 —
-    const postDiv = document.createElement("div");
-    postDiv.className = "post-detail";
-
+    // — 게시글 영역 —
     let statusClass = "", statusText = "";
     switch (data.status) {
       case "ACTIVE":    statusText = "판매 중"; statusClass = "badge--active"; break;
-      case "RESERVED":  statusText = "예약 중"; break;
-      case "COMPLETED": statusText = "거래 완료"; break;
+      case "RESERVED":  statusText = "예약 중";                            break;
+      case "COMPLETED": statusText = "거래 완료";                          break;
       default:          statusText = data.status;
     }
-
-    postDiv.innerHTML = `
+    postContainer.innerHTML = `
       <div class="post-header">
         <div class="info">
           <div class="name">${data.store_name}</div>
@@ -62,29 +98,26 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="post-content">${data.content.replace(/\n/g,"<br>")}</div>
     `;
-    postContainer.replaceWith(postDiv);
 
-    // — 댓글 —
-    const wrapper = document.createElement("div");
-    wrapper.id = "comments-container";
-    wrapper.className = "comments-section";
-    wrapper.innerHTML = `<h3>댓글</h3>`;
-    renderComments(data.comments, wrapper, 0);
-    commentsContainer.replaceWith(wrapper);
+    // — 댓글 영역 —
+    commentsContainer.innerHTML = `<h3>댓글</h3>`;
+    renderComments(data.comments, commentsContainer, 0);
 
-    bindMenuToggles();
+    bindCommentMenus();
     bindReplyButtons();
   }
 
-  // 댓글·대댓글 렌더
+  // 댓글·대댓글 재귀 렌더
   function renderComments(comments, container, depth) {
     comments.forEach(c => {
       const isParent = depth === 0;
       const isMine   = c.user_id === userId;
       const div      = document.createElement("div");
       div.className  = "comment" + (isParent ? "" : " reply");
+      div.dataset.commentId = c.comment_id;
 
-      const menuHtml = isMine
+      const isDeleted = c.deleted;
+      const menuHtml  = (isMine && !isDeleted)
         ? `<button class="menu-btn">⋮</button>
            <ul class="menu-list"><li>수정</li><li>삭제</li></ul>`
         : "";
@@ -109,63 +142,129 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 메뉴 토글
-  function bindMenuToggles() {
-    const menuButtons = document.querySelectorAll(".menu-btn");
-    const lists       = document.querySelectorAll(".menu-list");
-    const closeAll    = () => lists.forEach(l => l.style.display = "none");
+  // 댓글 ⋮ 메뉴 및 수정/삭제 바인딩
+  function bindCommentMenus() {
+    const btns  = document.querySelectorAll(".comment .menu-btn");
+    const lists = document.querySelectorAll(".comment .menu-list");
+    const closeAll = () => lists.forEach(l => l.style.display = "none");
 
-    menuButtons.forEach(btn => {
+    btns.forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
-        const next = btn.nextElementSibling;
-        const open = next.style.display === "block";
+        const ul = btn.nextElementSibling;
         closeAll();
-        next.style.display = open ? "none" : "block";
+        ul.style.display = (ul.style.display === "block" ? "none" : "block");
       });
     });
-    lists.forEach(l => l.addEventListener("click", e => e.stopPropagation()));
-    document.addEventListener("click", () => closeAll());
+
+    lists.forEach(list => {
+      const [editLi, deleteLi] = list.children;
+      // 수정
+      editLi.addEventListener("click", e => {
+        e.stopPropagation();
+        closeAll();
+        const commentDiv = list.closest(".comment");
+        editingCommentId = commentDiv.dataset.commentId;
+        const oldText = commentDiv.querySelector(".comment-text").textContent;
+        commentEditTextarea.value = oldText;
+        commentEditModal.style.display = "flex";
+        commentEditTextarea.focus();
+      });
+      // 삭제
+      deleteLi.addEventListener("click", async e => {
+        e.stopPropagation();
+        closeAll();
+        const commentId = list.closest(".comment").dataset.commentId;
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+        try {
+          const res = await fetch(
+            `${baseURL}/api/comments/${commentId}?user_id=${userId}`, {
+              method: "DELETE"
+            }
+          );
+          if (!res.ok) throw new Error(res.statusText);
+          await fetchPostDetail();
+        } catch (err) {
+          console.error("댓글 삭제 실패:", err);
+          alert("댓글 삭제 중 오류가 발생했습니다.");
+        }
+      });
+    });
+
+    // 밖 클릭 시 닫기
+    document.addEventListener("click", () => lists.forEach(l => l.style.display = "none"));
   }
 
-  // 답글 기능
+  // 답글 쓰기 바인딩
   function bindReplyButtons() {
-    // “답글 쓰기” 버튼 클릭
     document.querySelectorAll(".reply-btn").forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
-        const author = btn.closest(".comment")
-                          .querySelector(".comment-author").textContent;
+        const existing = commentInputWrap.querySelector(".mention-badge");
+        if (existing) {
+          existing.remove();
+          commentInputEl.placeholder = defaultPlaceholder;
+          commentInputEl.value = "";
+          currentParentId = null;
+          return;
+        }
+        const commentDiv = btn.closest(".comment");
+        currentParentId = commentDiv.dataset.commentId;
+        const author = commentDiv.querySelector(".comment-author").textContent;
         showMentionBadge(author);
       });
     });
   }
 
-  // 회색 @배지 만들고 삽입
+  // @뱃지 표시
   function showMentionBadge(author) {
-    // 이미 배지가 있으면 제거
     const existing = commentInputWrap.querySelector(".mention-badge");
     if (existing) existing.remove();
-
-    // 배지 생성
     const badge = document.createElement("span");
     badge.className = "mention-badge";
-    badge.innerHTML = `
-      @${author}
-      <button type="button" class="remove-mention">×</button>
-    `;
-    // 배지 삽입 (input 바로 앞)
+    badge.innerHTML = `@${author} <button type="button" class="remove-mention">×</button>`;
     commentInputWrap.insertBefore(badge, commentInputEl);
-
-    // placeholder 업데이트
-    commentInputEl.placeholder = ``;
+    commentInputEl.placeholder = "";
     commentInputEl.focus();
-
-    // X 클릭 시 배지 삭제 & placeholder 복구
-    badge.querySelector(".remove-mention").addEventListener("click", () => {
-      badge.remove();
-      commentInputEl.placeholder = defaultPlaceholder;
-      commentInputEl.focus();
-    });
+    badge.querySelector(".remove-mention")
+      .addEventListener("click", () => {
+        badge.remove();
+        currentParentId = null;
+        commentInputEl.placeholder = defaultPlaceholder;
+        commentInputEl.focus();
+      });
   }
+
+  // 댓글/답글 등록
+  commentBtnEl.addEventListener("click", async () => {
+    const content = commentInputEl.value.trim();
+    if (!content) {
+      alert("내용을 입력해주세요.");
+      return;
+    }
+    const payload = {
+      post_id:   Number(postId),
+      parent_id: currentParentId ? Number(currentParentId) : null,
+      user_id:   Number(userId),
+      content
+    };
+    try {
+      const res = await fetch(`${baseURL}/api/comments`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      commentInputEl.value = "";
+      currentParentId = null;
+      const badge = commentInputWrap.querySelector(".mention-badge");
+      if (badge) badge.remove();
+      commentInputEl.placeholder = defaultPlaceholder;
+      await fetchPostDetail();
+    } catch (err) {
+      console.error("댓글 등록 실패:", err);
+      alert("댓글 등록 중 오류가 발생했습니다.");
+    }
+  });
+
 });

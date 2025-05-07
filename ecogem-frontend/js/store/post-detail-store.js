@@ -262,7 +262,7 @@ else if (t.matches(".delete-post")) {
       div.dataset.commentId = c.comment_id;
 
       // “삭제된 댓글” 이거나 본인 댓글이 아니면 메뉴 숨기기
-      const isDeleted = c.deleted;   // DTO에 추가된 플래그
+      const isDeleted = c.deleted; 
       const menuHtml = (isMine && !isDeleted)
         ? `<button class="menu-btn">⋮</button>
      <ul class="menu-list"><li>수정</li><li>삭제</li></ul>`
@@ -272,11 +272,12 @@ else if (t.matches(".delete-post")) {
         <div class="comment-header">
           <div class="info">
             <div class="comment-author">${c.author_name}</div>
-            <div class="timestamp">${c.created_at.replace("T", " ").slice(0, 16)}</div>
           </div>
           ${menuHtml}
         </div>
         <div class="comment-text">${c.content}</div>
+        
+            <div class="timestamp">${c.created_at.replace("T", " ").slice(0, 16)}</div>
         ${isParent ? `<button class="reply-btn">답글 쓰기</button>` : ""}
       `;
       container.appendChild(div);
@@ -349,6 +350,8 @@ else if (t.matches(".delete-post")) {
     lists.forEach(l => l.addEventListener("click", e => e.stopPropagation()));
     document.addEventListener("click", () => lists.forEach(l => l.style.display = "none"));
   }
+
+  
   // — 답글 쓰기 바인딩 —
   function bindReplyButtons() {
     document.querySelectorAll(".reply-btn").forEach(btn => {
