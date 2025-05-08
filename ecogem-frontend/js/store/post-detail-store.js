@@ -216,21 +216,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Render comments section
     commentsContainer.innerHTML = `<h3>Comments</h3>`;
-    renderComments(data.comments, commentsContainer, 0);
+    renderComments(data.comments, commentsContainer, 0, data.store_name);
 
     bindCommentMenus();
     bindReplyButtons();
   }
 
   // Recursive render for comments and replies
-  function renderComments(comments, container, depth) {
+  function renderComments(comments, container, depth, storeName) {
     comments.forEach(c => {
       const isParent = depth === 0;
       const isMine   = c.user_id === userId;
       const div      = document.createElement("div");
       div.className  = "comment" + (isParent ? "" : " reply");
       div.dataset.commentId = c.comment_id;
-
+      const author = c.author_name || storeName;
       const isDeleted = c.deleted;
       const menuHtml  = (isMine && !isDeleted)
         ? `<button class="menu-btn">⋮</button>
@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
       div.innerHTML = `
         <div class="comment-header">
           <div class="info">
-            <div class="comment-author">${c.author_name}</div>
+            <div class="comment-author">${author}</div>
           </div>
           ${menuHtml}
         </div>
