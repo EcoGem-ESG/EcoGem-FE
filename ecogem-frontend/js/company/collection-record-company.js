@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const date = item.closest(".date-record").querySelector(".date").textContent.replace(/\./g, "-");
         const store = item.querySelector(".store-name").textContent;
         const name = item.querySelector(".collected-by-name").textContent;
-        const qty = item.querySelector(".quantity").textContent.split("L")[0];
+        const qty = item.querySelector(".quantity").textContent.match(/\d+(\.\d+)?/)[0];
         const price = item.querySelector(".price").textContent.replace(/[^0-9]/g, "");
         const total = item.querySelector(".total").textContent.replace(/[^0-9]/g, "");
 
