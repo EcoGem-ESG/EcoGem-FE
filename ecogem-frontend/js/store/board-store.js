@@ -1,45 +1,50 @@
 document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:8080";
-
-  // ▶ Hardcoded for testing (remove after auth integration)
-  const storeLat  = 37.5000;    // Test latitude
-  const storeLng  = 127.0000;   // Test longitude
+  const token   = localStorage.getItem("token");
+  if (!token) {
+    alert("로그인이 필요합니다.");
+    location.href = "../../pages/index.html";
+    return;
+  }
 
   const registerBtn = document.querySelector(".register-post-btn");
   const postList    = document.querySelector(".post-list");
 
-  // "Create Post" button click
+  // "Create Post" 버튼 클릭 시
   registerBtn.addEventListener("click", () => {
-    window.location.href = "register-post.html";
+    window.location.href = "../../pages/register-post.html";
   });
 
-  // Initial load
+  // 초기 로드
   fetchPosts();
 
-  // Fetch posts
   async function fetchPosts() {
-    const url = `${baseURL}/api/posts?lat=${storeLat}&lng=${storeLng}`;
+    let url = `${baseURL}/api/posts`;
+
     try {
       console.log("▶ GET", url);
-      const res  = await fetch(url);
-      const body = await res.json();
-      renderPosts(body.data || []);
+      const res = await fetch(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type":  "application/json"
+        }
+      });
+      if (!res.ok) throw new Error(res.statusText);
+      const { data } = await res.json();
+      renderPosts(data || []);
     } catch (err) {
-      console.error("Failed to load posts:", err);
-      alert("An error occurred while loading posts.");
+      console.error("게시글 불러오기 실패:", err);
+      alert("게시글 로딩 중 오류가 발생했습니다.");
     }
   }
 
-  // Render on screen
   function renderPosts(posts) {
-    // Remove existing cards
     postList.querySelectorAll(".post-card").forEach(el => el.remove());
 
     posts.forEach(p => {
       const card = document.createElement("div");
       card.className = "post-card";
 
-      // Determine badge text & class based on status
       let badgeText, badgeClass = "badge";
       switch (p.status) {
         case "ACTIVE":
@@ -62,9 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="${badgeClass}">${badgeText}</span>
       `;
 
-      // Navigate to store post detail on click
       card.addEventListener("click", () => {
-        window.location.href = `post-detail-store.html?postId=${p.post_id}`;
+        window.location.href = `../../pages/store/post-detail-store.html?postId=${p.post_id}`;
       });
 
       postList.appendChild(card);

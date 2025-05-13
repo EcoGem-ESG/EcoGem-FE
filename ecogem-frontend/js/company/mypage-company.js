@@ -18,12 +18,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (res.ok && result.success) {
       const data = result.data;
 
+      // 회사명
       document.querySelector(".company-name").textContent = data.name;
-      document.querySelectorAll(".info-item")[0].textContent = data.address;
-      document.querySelectorAll(".info-item")[1].textContent = data.managerName;
-      document.querySelectorAll(".info-item")[2].textContent = data.wasteTypes.join(", ");
-      document.querySelectorAll(".info-item")[3].textContent = data.companyPhone;
 
+      // Info 항목들 (0: 주소, 1: 관리자, 2: 폐기물 종류, 3: 전화번호)
+      const items = document.querySelectorAll(".info-item");
+      items[0].textContent = data.address;
+      items[1].textContent = data.managerName;
+      items[2].textContent = data.wasteTypes.join(", ");
+      items[3].textContent = data.companyPhone;
     } else {
       alert("회사 정보를 불러오지 못했습니다.");
     }

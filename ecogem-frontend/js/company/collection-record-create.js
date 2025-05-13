@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // TODO: set actual logged-in company userId and role
-  const userId = 1;
-  const role = 'COMPANY_WORKER';
   const baseURL = 'http://localhost:8080';
+  const token   = localStorage.getItem('token');
+  if (!token) {
+    alert('로그인이 필요합니다.');
+    return;
+  }
 
   const dateInput        = document.getElementById('collection-date');
   const storeNameInput   = document.getElementById('store-name');
@@ -14,9 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Calculate total price = quantity * unit price
   function updateTotalPrice() {
-      const qty  = parseFloat(quantityInput.value) || 0;
-      const unit = parseInt(unitPriceInput.value, 10) || 0;
-      totalPriceInput.value = Math.floor(qty * unit);
+    const qty  = parseFloat(quantityInput.value) || 0;
+    const unit = parseInt(unitPriceInput.value, 10) || 0;
+    totalPriceInput.value = Math.floor(qty * unit);
   }
 
   quantityInput.addEventListener('input', updateTotalPrice);
@@ -24,54 +26,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle submit button click
   submitBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
+    e.preventDefault();
 
-      // Validate required fields
-      if (!dateInput.value || !storeNameInput.value.trim() || !collectedByInput.value.trim()
-          || !quantityInput.value || !unitPriceInput.value || !totalPriceInput.value) {
-          alert('Please fill in all required fields.');
-          return;
-      }
+    // Validate required fields
+    if (!dateInput.value
+      || !storeNameInput.value.trim()
+      || !collectedByInput.value.trim()
+      || !quantityInput.value
+      || !unitPriceInput.value
+      || !totalPriceInput.value
+    ) {
+      alert('Please fill in all required fields.');
+      return;
+    }
 
-      // Build request payload
-      const payload = {
-          collected_at:    dateInput.value,
-          store_name:      storeNameInput.value.trim(),
-          collected_by:    collectedByInput.value.trim(),
-          volume_liter:    parseFloat(quantityInput.value),
-          price_per_liter: parseInt(unitPriceInput.value, 10),
-          total_price:     parseInt(totalPriceInput.value, 10)
-      };
+    const payload = {
+      collected_at:    dateInput.value,
+      store_name:      storeNameInput.value.trim(),
+      collected_by:    collectedByInput.value.trim(),
+      volume_liter:    parseFloat(quantityInput.value),
+      price_per_liter: parseInt(unitPriceInput.value, 10),
+      total_price:     parseInt(totalPriceInput.value, 10)
+    };
 
+    try {
+      const res = await fetch(`${baseURL}/api/collection-records`, {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body:    JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+      let result = {};
       try {
-          const response = await fetch(
-              `${baseURL}/api/collection-records?user_id=${userId}&role=${role}`,
-              {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload)
-              }
-          );
-
-          const text = await response.text();
-          let result;
-          try {
-              result = text ? JSON.parse(text) : {};
-          } catch (parseError) {
-              console.error('Failed to parse JSON:', text);
-              result = {};
-          }
-
-          if (response.ok && result.success) {
-              alert('Collection record successfully added.');
-              // Redirect to list page after successful creation
-              window.location.href = 'collection-record-company.html';
-          } else {
-              throw new Error(result.message || 'Failed to add record.');
-          }
-      } catch (err) {
-          console.error(err);
-          alert(`Error: ${err.message}`);
+        result = text ? JSON.parse(text) : {};
+      } catch {
+        console.error('Failed to parse response JSON:', text);
       }
+
+      if (res.ok && result.success) {
+        alert('Collection record successfully added.');
+        window.location.href = 'collection-record-company.html';
+      } else {
+        throw new Error(result.message || res.statusText);
+      }
+    } catch (err) {
+      console.error('Error adding collection record:', err);
+      alert(`Error: ${err.message}`);
+    }
   });
 });
