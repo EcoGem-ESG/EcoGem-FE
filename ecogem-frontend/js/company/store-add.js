@@ -6,9 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const phoneEl     = document.getElementById("store-phone");
   const ownerEl     = document.getElementById("store-owner-phone");
 
-  // ▶ Hardcoded for testing (remove after integrating real auth)
-  const userId   = 1;
-  const userRole = "COMPANY_WORKER";
+  // ▶ JWT 토큰은 로그인 시 localStorage에 저장했다고 가정
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
 
   submitBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -31,14 +34,16 @@ document.addEventListener("DOMContentLoaded", () => {
       owner_phone: ownerPhone
     };
 
-    const url = `${baseURL}/api/contracts/stores`
-              + `?user_id=${userId}&role=${userRole}`;
+    const url = `${baseURL}/api/contracts/stores`;
 
     try {
       console.log("▶ POST", url, payload);
       const res = await fetch(url, {
         method:  "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type":  "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body:    JSON.stringify(payload)
       });
       if (!res.ok) {
@@ -46,10 +51,9 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error(`${res.status} ${res.statusText}: ${errText}`);
       }
       alert("Store successfully added to your contract list.");
-      // Redirect back to the store list page
       window.location.href = "store-list.html";
     } catch (err) {
-      console.error(err);
+      console.error("Failed to add store:", err);
       alert("An error occurred while adding the store.");
     }
   });

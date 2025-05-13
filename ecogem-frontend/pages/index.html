@@ -10,9 +10,14 @@
   <div class="mobile-frame">
     <div class="login-container">
       <img src="../assets/EcoGem_logo.png" alt="EcoGem Logo" class="logo">
-      <input type="text" placeholder="Id">
-      <input type="password" placeholder="Password">
-      <button class="login-btn">Login</button>
+      <!-- id/login-form 추가 -->
+      <form id="login-form">
+        <!-- input 에 id, name 추가 -->
+        <input id="loginId" name="loginId" type="text" placeholder="Id">
+        <input id="pwd"     name="pwd"     type="password" placeholder="Password">
+        <!-- 버튼을 submit 으로 -->
+        <button type="submit" class="login-btn">Login</button>
+      </form>
       <button class="signup-link">Sign Up</button>
       <a href="#" class="reset-link">Reset Password</a>
     </div>

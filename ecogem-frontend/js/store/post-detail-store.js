@@ -1,46 +1,49 @@
 document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:8080";
-
-  // ▶ Hardcoded for testing (remove after auth integration)
-  const userId    = 2;
-  const userRole  = "STORE_OWNER";
-  const myStoreId = 1;   // ← Replace with actual store ID from API
+  const token = localStorage.getItem("token");
+  const userId = Number(localStorage.getItem("user_id"));
+  const myStoreId = Number(localStorage.getItem("store_id"));
+  if (!token) {
+    alert("로그인이 필요합니다.");
+    location.href = "../../pages/auth/login.html";
+    return;
+  }
 
   // Parse postId from URL
   const params = new URLSearchParams(window.location.search);
   const postId = params.get("postId");
   if (!postId) {
-    alert("postId is missing.");
+    alert("postId가 없습니다.");
     return;
   }
 
-  // — DOM References —
-  const topBarBtn         = document.querySelector(".top-bar .menu-btn");
-  const topBarList        = document.getElementById("post-menu-list");
-  const postContainer     = document.getElementById("post-detail-container");
+  // DOM refs
+  const topBarBtn = document.querySelector(".top-bar .menu-btn");
+  const topBarList = document.getElementById("post-menu-list");
+  const postContainer = document.getElementById("post-detail-container");
   const commentsContainer = document.getElementById("comments-container");
-  const commentInputWrap  = document.querySelector(".comment-input");
-  const commentInputEl    = commentInputWrap.querySelector("input");
-  const commentBtnEl      = commentInputWrap.querySelector(".submit-btn");
+  const commentInputWrap = document.querySelector(".comment-input");
+  const commentInputEl = commentInputWrap.querySelector("input");
+  const commentBtnEl = commentInputWrap.querySelector(".submit-btn");
   const defaultPlaceholder = "Enter a comment...";
 
-  // Modals
-  // Post edit modal
-  const postEditModal       = document.getElementById("post-edit-modal");
-  const postEditTextarea    = document.getElementById("post-edit-textarea");
-  const postEditCancelBtn   = document.getElementById("post-edit-cancel");
-  const postEditSaveBtn     = document.getElementById("post-edit-save");
-  // Comment edit modal
-  const commentEditModal     = document.getElementById("comment-edit-modal");
-  const commentEditTextarea  = document.getElementById("comment-edit-textarea");
+  // Post edit modal refs
+  const postEditModal = document.getElementById("post-edit-modal");
+  const postEditTextarea = document.getElementById("post-edit-textarea");
+  const postEditCancelBtn = document.getElementById("post-edit-cancel");
+  const postEditSaveBtn = document.getElementById("post-edit-save");
+  // Comment edit modal refs
+  const commentEditModal = document.getElementById("comment-edit-modal");
+  const commentEditTextarea = document.getElementById("comment-edit-textarea");
   const commentEditCancelBtn = document.getElementById("comment-edit-cancel");
-  const commentEditSaveBtn   = document.getElementById("comment-edit-save");
+  const commentEditSaveBtn = document.getElementById("comment-edit-save");
 
-  // State for replies/comments
-  let currentParentId    = null;
-  let editingCommentId   = null;
+  let currentParentId = null;
+  let editingCommentId = null;
+  // 초기엔 무조건 숨기기
+  topBarBtn.style.display = "none";
 
-  // Post edit modal cancel
+  // Post edit cancel
   postEditCancelBtn.addEventListener("click", () => {
     postEditModal.style.display = "none";
   });
@@ -48,28 +51,33 @@ document.addEventListener("DOMContentLoaded", () => {
   postEditSaveBtn.addEventListener("click", async () => {
     const newContent = postEditTextarea.value.trim();
     if (!newContent) {
-      alert("Please enter content.");
+      alert("내용을 입력해주세요.");
       return;
     }
     try {
       const res = await fetch(
         `${baseURL}/api/posts/${postId}`, {
-          method:  "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ store_id: myStoreId, content: newContent })
-        }
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ content: newContent })
+      }
       );
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.message || res.statusText);
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(err?.message || res.statusText);
+      }
       postEditModal.style.display = "none";
-      fetchPostDetail();
+      await fetchPostDetail();
     } catch (err) {
-      console.error("Failed to update post:", err);
-      alert("An error occurred while updating the post:\n" + err.message);
+      console.error("게시글 수정 실패:", err);
+      alert("수정 중 오류가 발생했습니다:\n" + err.message);
     }
   });
 
-  // Comment edit modal cancel
+  // Comment edit cancel
   commentEditCancelBtn.addEventListener("click", () => {
     editingCommentId = null;
     commentEditModal.style.display = "none";
@@ -78,48 +86,58 @@ document.addEventListener("DOMContentLoaded", () => {
   commentEditSaveBtn.addEventListener("click", async () => {
     const newText = commentEditTextarea.value.trim();
     if (!newText) {
-      alert("Please enter content.");
+      alert("내용을 입력해주세요.");
       return;
     }
     try {
       const res = await fetch(
         `${baseURL}/api/comments/${editingCommentId}`, {
-          method:  "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify({ user_id: userId, content: newText })
-        }
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ content: newText })
+      }
       );
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.message || res.statusText);
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(err?.message || res.statusText);
+      }
       commentEditModal.style.display = "none";
       editingCommentId = null;
-      fetchPostDetail();
+      await fetchPostDetail();
     } catch (err) {
-      console.error("Failed to update comment:", err);
-      alert("An error occurred while updating the comment.");
+      console.error("댓글 수정 실패:", err);
+      alert("댓글 수정 중 오류가 발생했습니다:\n" + err.message);
     }
   });
 
-  // Function to change post status
+  // Change status
   async function changeStatus(newStatus) {
     try {
       const res = await fetch(
         `${baseURL}/api/posts/${postId}/status`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ store_id: myStoreId, status: newStatus })
-        }
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      }
       );
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.message || res.statusText);
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        throw new Error(err?.message || res.statusText);
+      }
       await fetchPostDetail();
     } catch (err) {
-      console.error("Failed to change status:", err);
-      alert("An error occurred while changing status:\n" + err.message);
+      console.error("상태 변경 실패:", err);
+      alert("상태 변경 중 오류가 발생했습니다:\n" + err.message);
     }
   }
 
-  // Top-bar menu toggle and event delegation
+  // Top-bar menu
   topBarBtn.addEventListener("click", e => {
     e.stopPropagation();
     topBarList.style.display = topBarList.style.display === "block" ? "none" : "block";
@@ -129,125 +147,127 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   topBarList.addEventListener("click", async e => {
     e.stopPropagation();
-    const target = e.target;
-    if (target.matches(".change-active")) {
+    const t = e.target;
+    if (t.matches(".change-active")) {
       changeStatus("ACTIVE");
-    } else if (target.matches(".change-reserved")) {
+    } else if (t.matches(".change-reserved")) {
       changeStatus("RESERVED");
-    } else if (target.matches(".change-completed")) {
+    } else if (t.matches(".change-completed")) {
       changeStatus("COMPLETED");
-    } else if (target.matches(".edit-post")) {
-      // Open post edit modal
+    } else if (t.matches(".edit-post")) {
       const current = postContainer.querySelector(".post-content").innerHTML.replace(/<br>/g, "\n");
       postEditTextarea.value = current;
       postEditModal.style.display = "flex";
       postEditTextarea.focus();
-    } else if (target.matches(".delete-post")) {
-      // Delete post
-      if (!confirm("Are you sure you want to delete this post?")) return;
+    } else if (t.matches(".delete-post")) {
+      if (!confirm("정말 게시글을 삭제하시겠습니까?")) return;
       try {
-        const res2 = await fetch(
-          `${baseURL}/api/posts/${postId}?storeId=${myStoreId}`, { method: "DELETE" }
+        const res = await fetch(
+          `${baseURL}/api/posts/${postId}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${token}` }
+        }
         );
-        const body2 = await res2.json();
-        if (!res2.ok) throw new Error(body2.message || res2.statusText);
+        if (!res.ok) {
+          const err = await res.json().catch(() => null);
+          throw new Error(err?.message || res.statusText);
+        }
         location.href = "board-store.html";
       } catch (err) {
-        console.error("Failed to delete post:", err);
-        alert("An error occurred while deleting the post:\n" + err.message);
+        console.error("게시글 삭제 실패:", err);
+        alert("삭제 중 오류가 발생했습니다:\n" + err.message);
       }
     }
     topBarList.style.display = "none";
   });
 
-  // Fetch post detail on load
+  // Fetch detail
   fetchPostDetail();
   async function fetchPostDetail() {
     try {
       const res = await fetch(
-        `${baseURL}/api/posts/${postId}?user_id=${userId}&role=${userRole}`
+        `${baseURL}/api/posts/${postId}`, {
+        headers: { "Authorization": `Bearer ${token}` }
+      }
       );
+      if (!res.ok) throw new Error(res.statusText);
       const { data } = await res.json();
       renderDetail(data);
     } catch (err) {
-      console.error("Failed to load post detail:", err);
-      alert("An error occurred while loading post details.");
+      console.error("게시글 상세 불러오기 실패:", err);
+      alert("게시글 상세를 불러오는 중 오류가 발생했습니다.");
     }
   }
 
-  // Render post and comments
   function renderDetail(data) {
-    // Show or hide top-bar menu based on ownership
-    const isMine = userRole === "STORE_OWNER" && data.store_id === myStoreId;
+    const isMine = data.user_id === userId;
+
+    // 1) 메뉴 버튼 보여줄지 여부
+    topBarBtn.style.display = isMine ? "block" : "none";
+
+
     if (isMine) {
       const items = [];
-      if (data.status !== "ACTIVE")    items.push(`<li class="change-active">Mark as Selling</li>`);
-      if (data.status !== "RESERVED")  items.push(`<li class="change-reserved">Mark as Reserved</li>`);
+      if (data.status !== "ACTIVE") items.push(`<li class="change-active">Mark as Selling</li>`);
+      if (data.status !== "RESERVED") items.push(`<li class="change-reserved">Mark as Reserved</li>`);
       if (data.status !== "COMPLETED") items.push(`<li class="change-completed">Mark as Completed</li>`);
       items.push(`<li class="edit-post">Edit</li>`);
       items.push(`<li class="delete-post">Delete</li>`);
       topBarList.innerHTML = items.join("");
-      topBarBtn.style.display = "block";
-    } else {
-      topBarBtn.style.display = "none";
-      topBarList.style.display = "none";
     }
 
-    // Render post section
     let statusClass = "", statusText = "";
     switch (data.status) {
-      case "ACTIVE":    statusText = "Selling";   statusClass = "badge--active"; break;
-      case "RESERVED":  statusText = "Reserved";                      break;
-      case "COMPLETED": statusText = "Completed";                     break;
-      default:           statusText = data.status;
+      case "ACTIVE": statusText = "Selling"; statusClass = "badge--active"; break;
+      case "RESERVED": statusText = "Reserved"; break;
+      case "COMPLETED": statusText = "Completed"; break;
+      default: statusText = data.status;
     }
     postContainer.innerHTML = `
-      <div class="post-detail">
-        <div class="post-header">
-          <div class="info">
-            <div class="name">${data.store_name}</div>
-            <div class="timestamp">${data.created_at.replace("T", " ").slice(0, 16)}</div>
-          </div>
-          <span class="badge ${statusClass}">${statusText}</span>
+      <div class="post-header">
+        <div class="info">
+          <div class="name">${data.store_name}</div>
+          <div class="timestamp">${data.created_at.replace("T", " ").slice(0, 16)}</div>
         </div>
-        <div class="post-content">${data.content.replace(/\n/g, "<br>")}</div>
+        <span class="badge ${statusClass}">${statusText}</span>
       </div>
+      <div class="post-content">${data.content.replace(/\n/g, "<br>")}</div>
     `;
 
-    // Render comments section
     commentsContainer.innerHTML = `<h3>Comments</h3>`;
-    renderComments(data.comments, commentsContainer, 0, data.store_name);
-
+    renderComments(data.comments, commentsContainer, 0);
     bindCommentMenus();
     bindReplyButtons();
   }
 
-  // Recursive render for comments and replies
-  function renderComments(comments, container, depth, storeName) {
+  function renderComments(comments, container, depth) {
     comments.forEach(c => {
       const isParent = depth === 0;
-      const isMine   = c.user_id === userId;
-      const div      = document.createElement("div");
-      div.className  = "comment" + (isParent ? "" : " reply");
+      const isMineComm = c.user_id === userId && !c.deleted;  // ← 여기!
+      const div = document.createElement("div");
+      div.className = "comment" + (isParent ? "" : " reply");
       div.dataset.commentId = c.comment_id;
-      const author = c.author_name || storeName;
-      const isDeleted = c.deleted;
-      const menuHtml  = (isMine && !isDeleted)
+
+      // 메뉴 HTML: 내 댓글(isMineComm)일 때만
+      const menuHtml = isMineComm
         ? `<button class="menu-btn">⋮</button>
-           <ul class="menu-list"><li>Edit</li><li>Delete</li></ul>`
+         <ul class="menu-list">
+           <li class="edit-comment">Edit</li>
+           <li class="delete-comment">Delete</li>
+         </ul>`
         : "";
 
       div.innerHTML = `
-        <div class="comment-header">
-          <div class="info">
-            <div class="comment-author">${author}</div>
-          </div>
-          ${menuHtml}
+      <div class="comment-header">
+        <div class="info">
+          <div class="comment-author">${c.author_name}</div>
         </div>
-        <div class="comment-text">${c.content}</div>
-        <div class="timestamp">${c.created_at.replace("T", " ").slice(0, 16)}</div>
-        ${isParent ? `<button class="reply-btn">Reply</button>` : ""}
-      `;
+        ${menuHtml}
+      </div>
+      <div class="comment-text">${c.content}</div>
+      <div class="timestamp">${c.created_at.replace("T", " ").slice(0, 16)}</div>
+      ${isParent ? `<button class="reply-btn">Reply</button>` : ""}
+    `;
       container.appendChild(div);
 
       if (c.children?.length) {
@@ -258,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Bind comment ⋮ menu actions
   function bindCommentMenus() {
-    const btns  = document.querySelectorAll(".comment .menu-btn");
+    const btns = document.querySelectorAll(".comment .menu-btn");
     const lists = document.querySelectorAll(".comment .menu-list");
     const closeAll = () => lists.forEach(l => l.style.display = "none");
 
@@ -266,9 +286,8 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
         const ul = btn.nextElementSibling;
-        const isOpen = ul.style.display === "block";
         closeAll();
-        ul.style.display = isOpen ? "none" : "block";
+        ul.style.display = ul.style.display === "block" ? "none" : "block";
       });
     });
 
@@ -291,16 +310,19 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         closeAll();
         const commentId = list.closest(".comment").dataset.commentId;
-        if (!confirm("Are you sure you want to delete this comment?")) return;
+        if (!confirm("댓글을 삭제하시겠습니까?")) return;
         try {
           const res = await fetch(
-            `${baseURL}/api/comments/${commentId}?user_id=${userId}`, { method: "DELETE" }
+            `${baseURL}/api/comments/${commentId}`, {
+            method: "DELETE",
+            headers: { "Authorization": `Bearer ${token}` }
+          }
           );
           if (!res.ok) throw new Error(res.statusText);
-          fetchPostDetail();
+          await fetchPostDetail();
         } catch (err) {
-          console.error("Failed to delete comment:", err);
-          alert("An error occurred while deleting the comment.");
+          console.error("댓글 삭제 실패:", err);
+          alert("댓글 삭제 중 오류가 발생했습니다.");
         }
       });
     });
@@ -351,20 +373,22 @@ document.addEventListener("DOMContentLoaded", () => {
   commentBtnEl.addEventListener("click", async () => {
     const content = commentInputEl.value.trim();
     if (!content) {
-      alert("Please enter content.");
+      alert("내용을 입력해주세요.");
       return;
     }
     const payload = {
-      post_id:   Number(postId),
+      post_id: Number(postId),
       parent_id: currentParentId ? Number(currentParentId) : null,
-      user_id:   Number(userId),
       content
     };
     try {
       const res = await fetch(`${baseURL}/api/comments`, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(payload)
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
       });
       if (!res.ok) throw new Error(res.statusText);
       commentInputEl.value = "";
@@ -372,10 +396,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const badge = commentInputWrap.querySelector(".mention-badge");
       if (badge) badge.remove();
       commentInputEl.placeholder = defaultPlaceholder;
-      fetchPostDetail();
+      await fetchPostDetail();
     } catch (err) {
-      console.error("Failed to create comment:", err);
-      alert("An error occurred while creating the comment.");
+      console.error("댓글 작성 실패:", err);
+      alert("댓글 작성 중 오류가 발생했습니다.");
     }
   });
 
