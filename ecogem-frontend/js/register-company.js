@@ -4,18 +4,20 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const name = document.querySelector('input[placeholder="Enter company name"]').value;
-    const address = document.querySelector('input[placeholder="Enter address"]').value;
-    const managerName = document.querySelector('input[placeholder="Enter contact name"]').value;
-    const companyPhone = document.querySelector('input[placeholder="Enter phone number"]').value;
+    const name = document.querySelector('input[placeholder="Enter company name"]').value.trim();
+    const address = document.querySelector('input[placeholder="Enter address"]').value.trim();
+    const managerName = document.querySelector('input[placeholder="Enter contact name"]').value.trim();
+    const companyPhone = document.querySelector('input[placeholder="Enter phone number"]').value.trim();
 
+    // Collect selected waste types
     const selectedWasteTypes = [];
     document.querySelectorAll(".waste-buttons button.selected").forEach(btn => {
       selectedWasteTypes.push(btn.textContent.trim());
     });
 
+    // Validate required fields
     if (!name || !address || !managerName || !companyPhone || selectedWasteTypes.length === 0) {
-      alert("모든 필수 항목을 입력해주세요.");
+      alert("Please fill in all required fields.");
       return;
     }
 
@@ -40,21 +42,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const result = await res.json();
       if (res.ok && result.success) {
-        alert("업체 등록 완료!");
-        localStorage.setItem("status", "COMPLETE"); // 프론트에 상태도 갱신
-        location.href = "mypage-company.html"; // 마이페이지로 이동
+        alert("Company registration completed!");
+        // Update front-end status
+        localStorage.setItem("status", "COMPLETE");
+        // Redirect to My Page
+        window.location.href = "mypage-company.html";
       } else {
-        alert("등록 실패: " + result.message);
+        alert(`Registration failed: ${result.message || res.statusText}`);
       }
     } catch (err) {
-      console.error("업체 등록 실패:", err);
-      alert("서버 오류가 발생했습니다.");
+      console.error("Company registration failed:", err);
+      alert("A server error occurred.");
     }
   });
 
-  // ✅ 폐기물 버튼 선택 토글
-  const buttons = document.querySelectorAll(".waste-buttons button");
-  buttons.forEach(btn => {
+  // Toggle selection for waste type buttons
+  document.querySelectorAll(".waste-buttons button").forEach(btn => {
     btn.addEventListener("click", () => {
       btn.classList.toggle("selected");
     });

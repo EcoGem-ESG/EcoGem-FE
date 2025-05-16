@@ -4,55 +4,54 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const loginId = document.querySelector('input[placeholder="Enter username"]').value;
-    const pwd = document.querySelector('input[placeholder="Enter password"]').value;
-    const confirmPwd = document.querySelector('input[placeholder="Confirm password"]').value;
-    const email = document.querySelector('input[placeholder="Enter email"]').value;
+    const loginId    = document.querySelector('input[placeholder="Enter username"]').value.trim();
+    const pwd        = document.querySelector('input[placeholder="Enter password"]').value.trim();
+    const confirmPwd = document.querySelector('input[placeholder="Confirm password"]').value.trim();
+    const email      = document.querySelector('input[placeholder="Enter email"]').value.trim();
 
-    // 역할 버튼 중 선택된 거 찾기
+    // Determine selected role button
     const roleButtons = document.querySelectorAll(".role-buttons-inline button");
     let role = null;
     roleButtons.forEach((btn) => {
       if (btn.classList.contains("selected")) {
-        role = btn.textContent.includes("Store") ? "STORE_OWNER" : "COMPANY_OWNER";
+        role = btn.textContent.includes("Store") ? "STORE_OWNER" : "COMPANY_WORKER";
       }
     });
 
-    // 입력 체크
+    // Validate inputs
     if (!loginId || !pwd || !confirmPwd || !email || !role) {
-      alert("모든 필드를 입력해주세요.");
+      alert("Please fill in all fields.");
       return;
     }
     if (pwd !== confirmPwd) {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert("Passwords do not match.");
       return;
     }
 
     try {
       const res = await fetch("http://localhost:8080/api/auth/signup", {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ loginId, pwd, email, role })
+        body:    JSON.stringify({ loginId, pwd, email, role })
       });
 
       const result = await res.json();
-      if (res.ok) {
-        alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-        location.href = "index.html";
+      if (res.ok && result.success) {
+        alert("Signup successful! Redirecting to login page.");
+        window.location.href = "index.html";
       } else {
-        alert("회원가입 실패: " + result.message);
+        alert(`Signup failed: ${result.message || res.statusText}`);
       }
     } catch (err) {
-      console.error("오류:", err);
-      alert("서버 오류가 발생했습니다.");
+      console.error("Error during signup:", err);
+      alert("A server error occurred.");
     }
   });
 
-  // 역할 버튼 클릭 시 selected 토글
-  const roleButtons = document.querySelectorAll(".role-buttons-inline button");
-  roleButtons.forEach((btn) => {
+  // Toggle selection for role buttons
+  document.querySelectorAll(".role-buttons-inline button").forEach((btn) => {
     btn.addEventListener("click", () => {
-      roleButtons.forEach((b) => b.classList.remove("selected"));
+      document.querySelectorAll(".role-buttons-inline button").forEach((b) => b.classList.remove("selected"));
       btn.classList.add("selected");
     });
   });

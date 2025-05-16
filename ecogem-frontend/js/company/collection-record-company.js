@@ -1,23 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const baseURL     = "http://localhost:8080";
-  const token       = localStorage.getItem("token");
+  const baseURL      = "http://localhost:8080";
+  const token        = localStorage.getItem("token");
   if (!token) {
-    alert("로그인이 필요합니다.");
+    alert("Login is required.");
     return;
   }
 
-  const startInput  = document.getElementById("start-date");
-  const endInput    = document.getElementById("end-date");
-  const postList    = document.querySelector(".post-list");
-  const addRecordBtn = document.querySelector(".add-record-btn");
-  const popup       = document.getElementById("edit-popup");
-  const closeBtn    = document.querySelector(".popup-close");
-  const editForm    = document.getElementById("edit-form");
-  const qtyInput    = document.getElementById("edit-quantity");
-  const priceInput  = document.getElementById("edit-price");
-  const totalInput  = document.getElementById("edit-total");
+  const startInput    = document.getElementById("start-date");
+  const endInput      = document.getElementById("end-date");
+  const postList      = document.querySelector(".post-list");
+  const addRecordBtn  = document.querySelector(".add-record-btn");
+  const popup         = document.getElementById("edit-popup");
+  const closeBtn      = document.querySelector(".popup-close");
+  const editForm      = document.getElementById("edit-form");
+  const qtyInput      = document.getElementById("edit-quantity");
+  const priceInput    = document.getElementById("edit-price");
+  const totalInput    = document.getElementById("edit-total");
 
-  // 1) Fetch records on date change or initial load
+  // Fetch records when date range changes or on initial load
   startInput.addEventListener("change", fetchRecords);
   endInput.addEventListener("change", fetchRecords);
   fetchRecords();
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (params.length)    url += `?${params.join("&")}`;
 
     try {
-      console.log("▶ GET", url);
+      console.log("GET", url);
       const res = await fetch(url, {
         headers: {
           "Content-Type":  "application/json",
@@ -41,20 +41,23 @@ document.addEventListener("DOMContentLoaded", () => {
       const body = await res.json();
       renderRecords(body.records || []);
     } catch (err) {
-      console.error("수거 기록 조회 실패:", err);
-      alert("데이터를 불러오는 중 오류가 발생했습니다.");
+      console.error("Failed to fetch collection records:", err);
+      alert("An error occurred while loading data.");
     }
   }
 
+  // Group and render collection records by date
   function renderRecords(records) {
     postList.querySelectorAll(".date-record").forEach(el => el.remove());
 
-    const grouped = records.reduce((acc, r) => {
-      const key = r.collected_at; // YYYY-MM-DD
-      (acc[key] = acc[key] || []).push(r);
+    // Group records by 'collected_at' date (YYYY-MM-DD)
+    const grouped = records.reduce((acc, record) => {
+      const key = record.collected_at;
+      (acc[key] = acc[key] || []).push(record);
       return acc;
     }, {});
 
+    // Sort dates descending and render
     Object.keys(grouped)
       .sort((a, b) => b.localeCompare(a))
       .forEach(dateKey => {
@@ -64,13 +67,14 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="date">${dateKey.replace(/-/g, ".")}</div>
           <div class="divider"></div>
         `;
-        grouped[dateKey].forEach(r => {
+
+        grouped[dateKey].forEach(record => {
           const item = document.createElement("div");
           item.className = "record-item";
-          item.dataset.id = r.record_id;
+          item.dataset.id = record.record_id;
           item.innerHTML = `
             <div class="store-name-and-menu">
-              <div class="store-name">${r.store_name}</div>
+              <div class="store-name">${record.store_name}</div>
               <button class="menu-btn">⋮</button>
               <div class="menu-options">
                 <button class="edit-btn">Edit</button>
@@ -79,31 +83,36 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="collected-by-and-name">
               <div class="collected-by">Collected by:</div>
-              <div class="collected-by-name">${r.collected_by}</div>
+              <div class="collected-by-name">${record.collected_by}</div>
             </div>
             <div class="post-details">
-              <div class="quantity">${r.volume_liter} <small>L<br>collected</small></div>
-              <div class="price">${r.price_per_liter.toLocaleString()} <br><small>KRW/L</small></div>
-              <div class="total"><small>Total</small> <br> ${r.total_price.toLocaleString()} <small>KRW</small></div>
+              <div class="quantity">${record.volume_liter} <small>L collected</small></div>
+              <div class="price">${record.price_per_liter.toLocaleString()} <small>KRW/L</small></div>
+              <div class="total"><small>Total</small> <br> ${record.total_price.toLocaleString()} <small>KRW</small></div>
             </div>
           `;
           wrapper.appendChild(item);
         });
+
+        // Insert the date group before the 'Add Record' button
         postList.insertBefore(wrapper, addRecordBtn);
       });
 
     bindMenuEvents();
   }
 
+  // Bind edit/delete menu events
   function bindMenuEvents() {
+    // Toggle menu options
     document.querySelectorAll(".menu-btn").forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
-        const opts = btn.closest(".record-item").querySelector(".menu-options");
-        opts.style.display = opts.style.display === "block" ? "none" : "block";
+        const options = btn.closest(".record-item").querySelector(".menu-options");
+        options.style.display = options.style.display === "block" ? "none" : "block";
       });
     });
 
+    // Edit record
     document.querySelectorAll(".edit-btn").forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
@@ -111,10 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // Delete record
     document.querySelectorAll(".delete-btn").forEach(btn => {
       btn.addEventListener("click", async e => {
         e.stopPropagation();
-        if (!confirm("이 레코드를 삭제하시겠습니까?")) return;
+        if (!confirm("Are you sure you want to delete this record?")) return;
         const id = btn.closest(".record-item").dataset.id;
         try {
           await fetch(`${baseURL}/api/collection-records/${id}`, {
@@ -123,17 +133,19 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           fetchRecords();
         } catch (err) {
-          console.error("삭제 실패:", err);
-          alert("삭제 중 오류가 발생했습니다.");
+          console.error("Failed to delete record:", err);
+          alert("An error occurred while deleting the record.");
         }
       });
     });
 
+    // Close menus on outside click
     document.addEventListener("click", () => {
       document.querySelectorAll(".menu-options").forEach(o => o.style.display = "none");
     });
   }
 
+  // Auto-update total when quantity or price changes
   function updateTotal() {
     const qty   = parseFloat(qtyInput.value) || 0;
     const price = parseFloat(priceInput.value) || 0;
@@ -142,6 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
   qtyInput.addEventListener("input", updateTotal);
   priceInput.addEventListener("input", updateTotal);
 
+  // Open the edit popup and populate fields
   function openEditPopup(item) {
     const id    = item.dataset.id;
     const date  = item.closest(".date-record").querySelector(".date").textContent.replace(/\./g, "-");
@@ -162,10 +175,10 @@ document.addEventListener("DOMContentLoaded", () => {
     popup.style.display = "flex";
   }
 
-  closeBtn.addEventListener("click", () => {
-    popup.style.display = "none";
-  });
+  // Close the popup
+  closeBtn.addEventListener("click", () => { popup.style.display = "none"; });
 
+  // Handle form submission for edit
   editForm.addEventListener("submit", async e => {
     e.preventDefault();
     const id = editForm.dataset.id;
@@ -188,11 +201,12 @@ document.addEventListener("DOMContentLoaded", () => {
       popup.style.display = "none";
       fetchRecords();
     } catch (err) {
-      console.error("업데이트 실패:", err);
-      alert("수정 중 오류가 발생했습니다.");
+      console.error("Failed to update record:", err);
+      alert("An error occurred while updating the record.");
     }
   });
 
+  // Navigate to create record page
   addRecordBtn.addEventListener("click", () => {
     window.location.href = "collection-record-create.html";
   });

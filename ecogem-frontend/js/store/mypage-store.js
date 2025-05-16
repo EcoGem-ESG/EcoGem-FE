@@ -1,45 +1,45 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("로그인이 필요합니다.");
-    location.href = "../../index.html";
+    alert("Login is required.");
+    window.location.href = "../../index.html";
     return;
   }
 
   try {
     const res = await fetch("http://localhost:8080/api/mypage", {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
+      headers: { "Authorization": `Bearer ${token}` }
     });
-
     const result = await res.json();
 
     if (res.ok && result.success) {
       const data = result.data;
 
-      // HTML 요소에 값 넣기
+      // Populate HTML elements with values
       document.querySelector(".store-name").textContent = data.name;
-      document.querySelectorAll(".info-item")[0].textContent = data.address;
-      document.querySelectorAll(".info-item")[1].textContent = data.storePhone;
-      document.querySelectorAll(".info-item")[2].textContent = data.ownerPhone;
-      document.querySelectorAll(".info-item")[3].textContent = formatDeliveryType(data.deliveryType);
-
+      const items = document.querySelectorAll(".info-item");
+      items[0].textContent = data.address;
+      items[1].textContent = data.storePhone;
+      items[2].textContent = data.ownerPhone;
+      items[3].textContent = formatEmissionType(data.deliveryType);
     } else {
-      alert("마이페이지 정보를 불러오지 못했습니다.");
+      alert("Failed to load My Page information.");
     }
   } catch (err) {
-    console.error("마이페이지 요청 실패:", err);
-    alert("서버 오류가 발생했습니다.");
+    console.error("Failed to fetch My Page data:", err);
+    alert("A server error occurred.");
   }
 });
 
-function formatDeliveryType(type) {
+/**
+ * Convert emission enum code to display text
+ */
+function formatEmissionType(type) {
   switch (type) {
-    case "SMALL": return "Small Emission (1–5L/week)";
-    case "MEDIUM": return "Medium Emission (6–20L/week)";
-    case "LARGE": return "Large Emission (20L+/week)";
+    case "SMALL":   return "Small Emission (1–5L/week)";
+    case "MEDIUM":  return "Medium Emission (6–20L/week)";
+    case "LARGE":   return "Large Emission (20L+/week)";
     case "ONETIME": return "One-time Emission";
-    default: return type;
+    default:         return type;
   }
 }

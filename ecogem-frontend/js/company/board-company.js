@@ -1,33 +1,35 @@
 document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:8080";
 
-  // ▶ JWT 토큰은 로그인 시 localStorage 등에 저장했다고 가정
+  // Assume JWT token was stored in localStorage upon login
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("로그인이 필요합니다.");
+    alert("Login is required.");
     return;
   }
 
   const rangeSelect = document.querySelector(".range-select");
   const dropdown    = document.querySelector(".dropdown");
   const postList    = document.querySelector(".post-list");
-  let currentRadius = null;   // null = All
+  let currentRadius = null; // null = All
 
-  // Dropdown 세팅
+  // Initialize dropdown
   dropdown.style.display = "none";
   const resetLi = document.createElement("li");
   resetLi.textContent = "All";
   dropdown.prepend(resetLi);
   const radiusItems = dropdown.querySelectorAll("li");
-
+  
   // 1) Toggle dropdown
   rangeSelect.addEventListener("click", e => {
     dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     e.stopPropagation();
   });
-  document.addEventListener("click", () => dropdown.style.display = "none");
+  document.addEventListener("click", () => {
+    dropdown.style.display = "none";
+  });
 
-  // 2) Radius 선택
+  // 2) Select radius
   radiusItems.forEach(li => {
     li.addEventListener("click", () => {
       if (li.textContent === "All") {
@@ -42,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 3) 게시글 가져오기
+  // 3) Fetch posts
   async function fetchPosts() {
     let url = `${baseURL}/api/posts`;
     if (currentRadius) {
@@ -50,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      console.log("GET", url);
       const res = await fetch(url, {
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -64,11 +67,11 @@ document.addEventListener("DOMContentLoaded", () => {
       renderPosts(body.data || []);
     } catch (err) {
       console.error("Failed to load posts:", err);
-      alert("게시글을 불러오는 데 실패했습니다.");
+      alert("Failed to load posts.");
     }
   }
 
-  // 4) 렌더링
+  // 4) Render posts
   function renderPosts(posts) {
     postList.querySelectorAll(".post-card").forEach(el => el.remove());
 
@@ -104,6 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 초기 로딩
+  // Initial load
   fetchPosts();
 });
