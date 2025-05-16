@@ -2,27 +2,29 @@ document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:8080";
   const token   = localStorage.getItem("token");
   if (!token) {
-    alert("로그인이 필요합니다.");
-    location.href = "../../pages/index.html";
+    alert("Login is required.");
+    window.location.href = "../../pages/index.html";
     return;
   }
 
   const registerBtn = document.querySelector(".register-post-btn");
   const postList    = document.querySelector(".post-list");
 
-  // "Create Post" 버튼 클릭 시
+  // Navigate to the "Create Post" page when button is clicked
   registerBtn.addEventListener("click", () => {
     window.location.href = "../../pages/register-post.html";
   });
 
-  // 초기 로드
+  // Initial load of posts
   fetchPosts();
 
+  /**
+   * Fetch the list of posts from the server
+   */
   async function fetchPosts() {
-    let url = `${baseURL}/api/posts`;
-
+    const url = `${baseURL}/api/posts`;
     try {
-      console.log("▶ GET", url);
+      console.log("GET", url);
       const res = await fetch(url, {
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -33,12 +35,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const { data } = await res.json();
       renderPosts(data || []);
     } catch (err) {
-      console.error("게시글 불러오기 실패:", err);
-      alert("게시글 로딩 중 오류가 발생했습니다.");
+      console.error("Failed to load posts:", err);
+      alert("An error occurred while loading posts.");
     }
   }
 
+  /**
+   * Render post cards in the UI
+   */
   function renderPosts(posts) {
+    // Remove existing cards
     postList.querySelectorAll(".post-card").forEach(el => el.remove());
 
     posts.forEach(p => {
@@ -67,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <span class="${badgeClass}">${badgeText}</span>
       `;
 
+      // Navigate to post detail on click
       card.addEventListener("click", () => {
         window.location.href = `../../pages/store/post-detail-store.html?postId=${p.post_id}`;
       });

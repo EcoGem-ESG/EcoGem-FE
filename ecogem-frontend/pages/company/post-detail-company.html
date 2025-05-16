@@ -15,16 +15,15 @@
     <div class="top-bar">
       <a href="board-company.html" class="back-btn">&lt;</a>
       <div class="spacer"></div>
+      <!-- 메뉴 버튼 추가 -->
+      <button class="menu-btn" style="display:none;">⋮</button>
+      <ul id="post-menu-list" class="menu-list"></ul>
     </div>
 
     <!-- Scroll area -->
     <div class="scroll-area">
-      <!-- JS will generate and insert the .post-detail element here -->
       <div id="post-detail-container"></div>
-
       <hr />
-
-      <!-- JS will generate and insert the .comments-section element here -->
       <div id="comments-container"></div>
     </div>
 
@@ -35,7 +34,19 @@
     </div>
   </div>
 
-  <!-- Edit comment modal -->
+  <!-- Post edit modal 추가 -->
+  <div id="post-edit-modal" class="modal-overlay" style="display:none;">
+    <div class="modal">
+      <h3>Edit Post</h3>
+      <textarea id="post-edit-textarea" rows="4"></textarea>
+      <div class="modal-actions">
+        <button id="post-edit-cancel">Cancel</button>
+        <button id="post-edit-save">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comment edit modal -->
   <div id="comment-edit-modal" class="modal-overlay" style="display:none;">
     <div class="modal">
       <h3>Edit Comment</h3>

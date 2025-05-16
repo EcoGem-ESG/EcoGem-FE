@@ -45,7 +45,6 @@ input {
 
 input[type="password"] {
   margin-bottom: 30px;
-  /* 비밀번호 입력란 아래 간격을 늘림 */
 }
 
 button {

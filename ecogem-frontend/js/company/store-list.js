@@ -4,14 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.querySelector(".search-input");
   const searchBtn   = document.querySelector(".search-icon");
 
-  // ▶ JWT 토큰은 로그인 시 localStorage에 저장했다고 가정
+  // Assume JWT token is stored in localStorage upon login
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("로그인이 필요합니다.");
+    alert("Login is required.");
     return;
   }
 
-  // 최초 로드 및 검색 버튼/Enter 키 이벤트
+  // Initial load and search trigger (button click or Enter key)
   fetchStores();
   searchBtn.addEventListener("click", fetchStores);
   searchInput.addEventListener("keydown", e => {
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /**
-   * 1) 계약된 가게 목록 조회
+   * 1) Fetch list of contracted stores
    */
   async function fetchStores() {
     let url = `${baseURL}/api/contracts/stores`;
@@ -40,15 +40,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const body = await res.json();
       renderStores(body.data || []);
     } catch (err) {
-      console.error("가게 목록 조회 실패:", err);
-      alert("가게 목록을 불러오는 중 오류가 발생했습니다.");
+      console.error("Failed to load store list:", err);
+      alert("An error occurred while loading the store list.");
     }
   }
 
   /**
-   * 2) 가게 카드 렌더링
+   * 2) Render store cards
    */
   function renderStores(stores) {
+    // Remove existing cards
     scrollArea.querySelectorAll(".store-card").forEach(el => el.remove());
 
     stores.forEach(s => {
@@ -74,13 +75,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /**
-   * 3) 삭제 버튼 이벤트 바인딩
+   * 3) Bind delete button events
    */
   function bindDeleteEvents() {
     scrollArea.querySelectorAll(".store-card .delete-btn")
       .forEach(btn => btn.addEventListener("click", async e => {
         e.stopPropagation();
-        if (!confirm("이 가게를 계약 목록에서 삭제하시겠습니까?")) return;
+        if (!confirm("Are you sure you want to remove this store from the contract list?")) return;
 
         const card    = btn.closest(".store-card");
         const storeId = card.dataset.id;
@@ -90,17 +91,15 @@ document.addEventListener("DOMContentLoaded", () => {
           console.log("DELETE", url);
           const res = await fetch(url, {
             method:  "DELETE",
-            headers: {
-              "Authorization": `Bearer ${token}`
-            }
+            headers: { "Authorization": `Bearer ${token}` }
           });
           if (!res.ok) throw new Error(res.statusText);
 
-          // 삭제 성공 시 카드 제거
+          // Remove card on successful deletion
           card.remove();
         } catch (err) {
-          console.error("가게 삭제 실패:", err);
-          alert("가게 삭제 중 오류가 발생했습니다.");
+          console.error("Failed to delete store:", err);
+          alert("An error occurred while deleting the store.");
         }
       }));
   }

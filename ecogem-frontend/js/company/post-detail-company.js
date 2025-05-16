@@ -2,22 +2,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const baseURL = "http://localhost:8080";
   const token   = localStorage.getItem("token");
   const userId  = Number(localStorage.getItem("user_id"));
-  const myStoreId = Number(localStorage.getItem("store_id"));
-  if (!token || !userId || !myStoreId) {
-    alert("로그인이 필요합니다.");
-    location.href = "../../pages/auth/login.html";
+  if (!token || !userId) {
+    alert("Login is required.");
+    window.location.href = "../../pages/auth/login.html";
     return;
   }
 
-  //— URL에서 postId 가져오기
+  // Parse postId from URL
   const params = new URLSearchParams(window.location.search);
   const postId = params.get("postId");
   if (!postId) {
-    alert("postId가 없습니다.");
+    alert("postId is missing.");
     return;
   }
 
-  //— DOM refs
+  // DOM references
   const topBarBtn         = document.querySelector(".top-bar .menu-btn");
   const topBarList        = document.getElementById("post-menu-list");
   const postContainer     = document.getElementById("post-detail-container");
@@ -25,14 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const commentInputWrap  = document.querySelector(".comment-input");
   const commentInputEl    = commentInputWrap.querySelector("input");
   const commentBtnEl      = commentInputWrap.querySelector(".submit-btn");
-  const defaultPlaceholder = "Enter a comment...";
+  const defaultPlaceholder= "Enter a comment...";
 
-  //— Modals
-  const postEditModal      = document.getElementById("post-edit-modal");
-  const postEditTextarea   = document.getElementById("post-edit-textarea");
-  const postEditCancelBtn  = document.getElementById("post-edit-cancel");
-  const postEditSaveBtn    = document.getElementById("post-edit-save");
-
+  // Post edit modal
+  const postEditModal     = document.getElementById("post-edit-modal");
+  const postEditTextarea  = document.getElementById("post-edit-textarea");
+  const postEditCancelBtn = document.getElementById("post-edit-cancel");
+  const postEditSaveBtn   = document.getElementById("post-edit-save");
+  // Comment edit modal
   const commentEditModal     = document.getElementById("comment-edit-modal");
   const commentEditTextarea  = document.getElementById("comment-edit-textarea");
   const commentEditCancelBtn = document.getElementById("comment-edit-cancel");
@@ -41,16 +40,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentParentId  = null;
   let editingCommentId = null;
 
-  //— Post edit cancel/save
-  postEditCancelBtn.addEventListener("click", () => {
-    postEditModal.style.display = "none";
-  });
+  // Initially hide the top-bar menu
+  topBarBtn.style.display = "none";
+
+  // Bind post edit modal buttons
+  postEditCancelBtn.addEventListener("click", () => postEditModal.style.display = "none");
   postEditSaveBtn.addEventListener("click", async () => {
     const newContent = postEditTextarea.value.trim();
-    if (!newContent) { alert("내용을 입력해주세요."); return; }
+    if (!newContent) { alert("Please enter content."); return; }
     try {
       const res = await fetch(`${baseURL}/api/posts/${postId}`, {
-        method:  "PATCH",
+        method: "PATCH",
         headers: {
           "Content-Type":  "application/json",
           "Authorization": `Bearer ${token}`
@@ -61,21 +61,21 @@ document.addEventListener("DOMContentLoaded", () => {
       postEditModal.style.display = "none";
       await fetchPostDetail();
     } catch {
-      alert("게시글 수정 중 오류가 발생했습니다.");
+      alert("An error occurred while updating the post.");
     }
   });
 
-  //— Comment edit cancel/save
+  // Bind comment edit modal buttons
   commentEditCancelBtn.addEventListener("click", () => {
     editingCommentId = null;
     commentEditModal.style.display = "none";
   });
   commentEditSaveBtn.addEventListener("click", async () => {
     const newText = commentEditTextarea.value.trim();
-    if (!newText) { alert("내용을 입력해주세요."); return; }
+    if (!newText) { alert("Please enter content."); return; }
     try {
       const res = await fetch(`${baseURL}/api/comments/${editingCommentId}`, {
-        method:  "PATCH",
+        method: "PATCH",
         headers: {
           "Content-Type":  "application/json",
           "Authorization": `Bearer ${token}`
@@ -87,11 +87,11 @@ document.addEventListener("DOMContentLoaded", () => {
       editingCommentId = null;
       await fetchPostDetail();
     } catch {
-      alert("댓글 수정 중 오류가 발생했습니다.");
+      alert("An error occurred while updating the comment.");
     }
   });
 
-  //— Top-bar menu toggle
+  // Toggle top-bar menu
   topBarBtn.addEventListener("click", e => {
     e.stopPropagation();
     topBarList.style.display = topBarList.style.display === "block" ? "none" : "block";
@@ -100,16 +100,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   topBarList.addEventListener("click", async e => {
     e.stopPropagation();
-    const action = e.target.className;
-    // 상태 변경, 편집, 삭제
-    if (action.startsWith("change-")) {
-      const status = action.split("-")[1].toUpperCase();
+    const cls = e.target.className;
+    if (cls.startsWith("change-")) {
+      const status = cls.split("-")[1].toUpperCase();
       await changeStatus(status);
-    } else if (action === "edit-post") {
+    } else if (cls === "edit-post") {
+      // Open post edit modal
       postEditTextarea.value = postContainer.querySelector(".post-content").innerHTML.replace(/<br>/g, "\n");
       postEditModal.style.display = "flex";
-    } else if (action === "delete-post") {
-      if (!confirm("정말 삭제하시겠습니까?")) return;
+    } else if (cls === "delete-post") {
+      if (!confirm("Are you sure you want to delete this post?")) return;
       await deletePost();
     }
     topBarList.style.display = "none";
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function changeStatus(newStatus) {
     try {
       const res = await fetch(`${baseURL}/api/posts/${postId}/status`, {
-        method:  "PATCH",
+        method: "PATCH",
         headers: {
           "Content-Type":  "application/json",
           "Authorization": `Bearer ${token}`
@@ -128,24 +128,23 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!res.ok) throw new Error();
       await fetchPostDetail();
     } catch {
-      alert("상태 변경 중 오류가 발생했습니다.");
+      alert("An error occurred while changing status.");
     }
   }
 
   async function deletePost() {
     try {
       const res = await fetch(`${baseURL}/api/posts/${postId}`, {
-        method:  "DELETE",
+        method: "DELETE",
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (!res.ok) throw new Error();
-      location.href = "board-store.html";
+      location.href = "board-company.html";
     } catch {
-      alert("게시글 삭제 중 오류가 발생했습니다.");
+      alert("An error occurred while deleting the post.");
     }
   }
 
-  //— Fetch & render
   async function fetchPostDetail() {
     try {
       const res = await fetch(`${baseURL}/api/posts/${postId}`, {
@@ -155,14 +154,26 @@ document.addEventListener("DOMContentLoaded", () => {
       const { data } = await res.json();
       renderDetail(data);
     } catch {
-      alert("게시글 상세를 불러오는 중 오류가 발생했습니다.");
+      alert("An error occurred while loading post details.");
     }
   }
   fetchPostDetail();
 
   function renderDetail(data) {
-    // Post header
-    const isMinePost = data.store_id === myStoreId;
+    // Check ownership
+    const isMine = data.user_id === userId;
+    topBarBtn.style.display = isMine ? "block" : "none";
+
+    if (isMine) {
+      const items = [];
+      if (data.status !== "ACTIVE")    items.push(`<li class="change-active">Mark as Selling</li>`);
+      if (data.status !== "RESERVED")  items.push(`<li class="change-reserved">Mark as Reserved</li>`);
+      if (data.status !== "COMPLETED") items.push(`<li class="change-completed">Mark as Completed</li>`);
+      items.push(`<li class="edit-post">Edit</li>`);
+      items.push(`<li class="delete-post">Delete</li>`);
+      topBarList.innerHTML = items.join("");
+    }
+
     const statusMap = {
       ACTIVE:   ["Selling",   "badge--active"],
       RESERVED: ["Reserved",  ""],
@@ -179,20 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="post-content">${data.content.replace(/\n/g,"<br>")}</div>
     `;
-    // Top-bar menu items
-    if (isMinePost) {
-      const items = [];
-      if (data.status !== "ACTIVE")   items.push(`<li class="change-active">Mark as Selling</li>`);
-      if (data.status !== "RESERVED") items.push(`<li class="change-reserved">Mark as Reserved</li>`);
-      if (data.status !== "COMPLETED")items.push(`<li class="change-completed">Mark as Completed</li>`);
-      items.push(`<li class="edit-post">Edit</li>`, `<li class="delete-post">Delete</li>`);
-      topBarList.innerHTML = items.join("");
-      topBarBtn.style.display = "block";
-    } else {
-      topBarBtn.style.display = "none";
-    }
 
-    // Comments
+    // Render comments
     commentsContainer.innerHTML = `<h3>Comments</h3>`;
     renderComments(data.comments, commentsContainer, 0);
     bindCommentMenus();
@@ -201,15 +200,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderComments(comments, container, depth) {
     comments.forEach(c => {
-      const isParent    = depth === 0;
-      const isMineComm  = c.user_id === userId && !c.deleted;
-      const div         = document.createElement("div");
-      div.className     = "comment" + (isParent ? "" : " reply");
+      const isParent   = depth === 0;
+      const isMineComm = c.user_id === userId && !c.deleted;
+      const div        = document.createElement("div");
+      div.className    = "comment" + (isParent ? "" : " reply");
       div.dataset.commentId = c.comment_id;
 
       const menuHtml = isMineComm
         ? `<button class="menu-btn">⋮</button>
-           <ul class="menu-list"><li class="edit-comment">Edit</li><li class="delete-comment">Delete</li></ul>`
+           <ul class="menu-list">
+             <li class="edit-comment">Edit</li>
+             <li class="delete-comment">Delete</li>
+           </ul>`
         : "";
 
       div.innerHTML = `
@@ -224,10 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ${isParent ? `<button class="reply-btn">Reply</button>` : ""}
       `;
       container.appendChild(div);
-
-      if (c.children?.length) {
-        renderComments(c.children, container, depth + 1);
-      }
+      if (c.children?.length) renderComments(c.children, container, depth+1);
     });
   }
 
@@ -236,46 +235,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const lists = document.querySelectorAll(".comment .menu-list");
     const closeAll = () => lists.forEach(l => l.style.display = "none");
 
-    btns.forEach(btn => {
-      btn.addEventListener("click", e => {
+    btns.forEach(b => {
+      b.addEventListener("click", e => {
         e.stopPropagation();
-        const ul = btn.nextElementSibling;
         closeAll();
+        const ul = b.nextElementSibling;
         ul.style.display = ul.style.display === "block" ? "none" : "block";
       });
     });
 
     lists.forEach(list => {
       const [editLi, deleteLi] = list.children;
-      // Edit comment
-      editLi.addEventListener("click", e => {
-        e.stopPropagation();
-        closeAll();
+      editLi.addEventListener("click", async e => {
+        e.stopPropagation(); closeAll();
         editingCommentId = list.closest(".comment").dataset.commentId;
-        const old = list.closest(".comment").querySelector(".comment-text").textContent;
-        commentEditTextarea.value = old;
+        commentEditTextarea.value = list.closest(".comment").querySelector(".comment-text").textContent;
         commentEditModal.style.display = "flex";
-        commentEditTextarea.focus();
       });
-      // Delete comment
       deleteLi.addEventListener("click", async e => {
-        e.stopPropagation();
-        closeAll();
-        if (!confirm("댓글을 삭제하시겠습니까?")) return;
-        const cid = list.closest(".comment").dataset.commentId;
+        e.stopPropagation(); closeAll();
+        if (!confirm("Are you sure you want to delete this comment?")) return;
         try {
-          const res = await fetch(`${baseURL}/api/comments/${cid}`, {
-            method:  "DELETE",
+          const res = await fetch(`${baseURL}/api/comments/${list.closest(".comment").dataset.commentId}`, {
+            method: "DELETE",
             headers: { "Authorization": `Bearer ${token}` }
           });
           if (!res.ok) throw new Error();
           await fetchPostDetail();
         } catch {
-          alert("댓글 삭제 중 오류가 발생했습니다.");
+          alert("An error occurred while deleting the comment.");
         }
       });
     });
-
     document.addEventListener("click", () => lists.forEach(l => l.style.display = "none"));
   }
 
@@ -283,40 +274,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".reply-btn").forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
-        const existing = commentInputWrap.querySelector(".mention-badge");
-        if (existing) {
-          existing.remove();
-          currentParentId = null;
-          commentInputEl.placeholder = defaultPlaceholder;
-          commentInputEl.value = "";
-          return;
-        }
-        currentParentId = btn.closest(".comment").dataset.commentId;
-        showMentionBadge(btn.closest(".comment").querySelector(".comment-author").textContent);
+        // mention badge logic goes here
       });
     });
   }
 
-  function showMentionBadge(author) {
-    const badge = document.createElement("span");
-    badge.className = "mention-badge";
-    badge.innerHTML = `@${author} <button type="button" class="remove-mention">×</button>`;
-    commentInputWrap.insertBefore(badge, commentInputEl);
-    commentInputEl.placeholder = "";
-    commentInputEl.focus();
-    badge.querySelector(".remove-mention").addEventListener("click", () => {
-      badge.remove();
-      currentParentId = null;
-      commentInputEl.placeholder = defaultPlaceholder;
-    });
-  }
-
+  // Create a new comment
   commentBtnEl.addEventListener("click", async () => {
     const content = commentInputEl.value.trim();
-    if (!content) { alert("내용을 입력해주세요."); return; }
+    if (!content) { alert("Please enter content."); return; }
     try {
       const res = await fetch(`${baseURL}/api/comments`, {
-        method:  "POST",
+        method: "POST",
         headers: {
           "Content-Type":  "application/json",
           "Authorization": `Bearer ${token}`
@@ -333,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
       commentInputEl.placeholder = defaultPlaceholder;
       await fetchPostDetail();
     } catch {
-      alert("댓글 작성 중 오류가 발생했습니다.");
+      alert("An error occurred while creating the comment.");
     }
   });
 

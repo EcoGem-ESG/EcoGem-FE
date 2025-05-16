@@ -1,19 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   const baseURL  = "http://localhost:8080";
+  // Assume JWT token is stored in localStorage upon login
   const token    = localStorage.getItem("token");
   if (!token) {
-    alert("로그인이 필요합니다.");
-    location.href = "../../pages/auth/login.html";
+    alert("Login is required.");
+    window.location.href = "../../pages/auth/login.html";
     return;
   }
 
   const textarea  = document.getElementById("post-content");
   const submitBtn = document.querySelector(".submit-btn");
 
+  // Handle post creation
   submitBtn.addEventListener("click", async () => {
     const content = textarea.value.trim();
     if (!content) {
-      alert("Please enter the post content.");
+      alert("Please enter post content.");
       textarea.focus();
       return;
     }
@@ -36,6 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const { data } = await res.json();
       const newPostId = data.post_id;
+      // Redirect to the newly created post
       window.location.href = `post-detail-store.html?postId=${newPostId}`;
 
     } catch (err) {

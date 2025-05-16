@@ -6,10 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const phoneEl     = document.getElementById("store-phone");
   const ownerEl     = document.getElementById("store-owner-phone");
 
-  // ▶ JWT 토큰은 로그인 시 localStorage에 저장했다고 가정
   const token = localStorage.getItem("token");
   if (!token) {
-    alert("로그인이 필요합니다.");
+    alert("Login is required.");
     return;
   }
 

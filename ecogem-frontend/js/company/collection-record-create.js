@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const baseURL = 'http://localhost:8080';
   const token   = localStorage.getItem('token');
   if (!token) {
-    alert('로그인이 필요합니다.');
+    alert('Login is required.');
     return;
   }
 
